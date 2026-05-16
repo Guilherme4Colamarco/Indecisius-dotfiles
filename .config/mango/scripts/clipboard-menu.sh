@@ -60,7 +60,7 @@ done < <(cliphist list)
 
 [ -n "$menu_items" ] || { notify-send "Clipboard" "Clipboard vazio"; exit 0; }
 
-selected=$(printf '%b' "$menu_items" | rofi -dmenu -i -show-icons -p 'Clipboard') || exit 0
+selected=$(printf '%b' "$menu_items" | rofi -dmenu -i -show-icons -p 'Clipboard' -theme clipboard) || exit 0
 [ -n "$selected" ] || exit 0
 
 # Decode and copy with correct MIME type

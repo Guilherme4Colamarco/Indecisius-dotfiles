@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-choice=$(cat <<'EMOJI' | rofi -dmenu -i -p 'Emoji' -lines 12
+choice=$(cat <<'EMOJI' | rofi -dmenu -i -p 'Emoji' -lines 12 -theme clipboard
 😀 grinning face
 😄 smiling eyes
 😁 beaming face

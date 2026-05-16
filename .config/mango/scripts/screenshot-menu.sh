@@ -11,7 +11,7 @@ fi
 
 MONITORS=$(wlr-randr | awk '/^Output /{print $2}')
 
-SELECTED=$(echo "$MONITORS" | rofi -dmenu -i -p "Capture monitor" -lines 8) || exit 1
+SELECTED=$(echo "$MONITORS" | rofi -dmenu -i -p "Capture monitor" -lines 8 -theme clipboard) || exit 1
 [ -z "$SELECTED" ] && exit 1
 
 OUTPUT_NAME=$(echo "$SELECTED" | awk '{print $1}')

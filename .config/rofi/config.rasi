@@ -1,7 +1,7 @@
 @theme "spotlight"
 
 configuration {
-  font: "Google Sans Flex 13";
+  font: "JetBrainsMono Nerd Font 13";
   drun-display-format: "{name}";
   show-icons: true;
   icon-theme: "Papirus";

@@ -1,7 +1,7 @@
 * {
     background-color: transparent;
     text-color: #fafafa;
-    font: " Google Sans Flex 12";
+    font: " JetBrainsMono Nerd Font 12";
 }
 
 window {
@@ -29,7 +29,7 @@ inputbar {
 entry {
   placeholder: "Type here to search";
   placeholder-color: rgba(255,255,255,0.6);
-  font: "Google Sans Flex 12";
+  font: "JetBrainsMono Nerd Font 12";
 }
 
 listview {
