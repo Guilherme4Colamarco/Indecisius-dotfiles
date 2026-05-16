@@ -66,6 +66,14 @@ gh repo clone <seu-user>/Indecisius-dotfiles ~/.config
 
 ## Créditos
 
-- Event Horizon dotfiles (base original)
-- Tokyo Night color palette
-- CachyOS community
+Este rice é uma colcha de retalhos indecisa que não existiria sem os projetos base:
+
+| Projeto | Autor | O que reaproveitamos |
+|---|---|---|
+| **[Event Horizon Dotfiles](https://github.com/Western-Stock2454/Event-Horizon-Dotfiles)** | [@Western-Stock2454](https://github.com/Western-Stock2454) | Estrutura do Mango WM, scripts auxiliares, temas do Rofi, keybinds base, configs de animação/decoração |
+| **[hobbyist-dotfiles](https://github.com/Gurjaka/hobbyist-dotfiles)** | [@Gurjaka](https://github.com/Gurjaka) | Fastfetch config, inspiração para organização de dotfiles, parte da estrutura de scripts |
+
+- **Tokyo Night** color palette por [Enkia](https://github.com/enkia/tokyo-night-vscode-theme)
+- **CachyOS** community pelas configs base e repo packages
+
+> *"Nada é criado do zero, tudo é remixado até parar de quebrar."* — Indecisius philosophy
