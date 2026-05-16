@@ -1,10 +1,10 @@
-# Indecisius Dotfiles
+# Mango WM Dotfiles
 
-> Dotfiles indecisos — porque decidir é difícil, então troca tudo até funcionar.
+> Minimal rice for CachyOS using Mango (Hyprland wrapper).
 
 ## Sobre
 
-Este repositório contém as configurações pessoais de desktop para CachyOS, migradas do setup [Event Horizon](https://github.com/ Western-Stock2454/Event-Horizon-Dotfiles) (baseado em Quickshell) para um rice tradicional usando **Mango WM + Waybar + Rofi + Mako**.
+Este repositório contém as configurações de desktop para **CachyOS** com foco exclusivo no **Mango WM** e seu ecossistema.
 
 ## Stack
 
@@ -37,7 +37,7 @@ Este repositório contém as configurações pessoais de desktop para CachyOS, m
 │   ├── mako/               # Notificações
 │   ├── rofi/               # Temas do Rofi
 │   ├── wlogout/            # Layout e style do power menu
-│   └── EventHorizon/       # Settings (matugen desligado)
+│   └── waypaper/           # Config do seletor de wallpaper
 └── .kimi/                  # Config do Kimi CLI
 ```
 
@@ -58,14 +58,12 @@ Este repositório contém as configurações pessoais de desktop para CachyOS, m
 ## Instalação Rápida (Automática)
 
 ```bash
-git clone https://github.com/<seu-user>/Indecisius-dotfiles.git
-cd Indecisius-dotfiles
+git clone https://github.com/<seu-user>/mango-dotfiles.git
+cd mango-dotfiles
 ./install.sh
 ```
 
-O instalador detecta automaticamente sua distro e ambiente:
-- **Arch/CachyOS barebones** → instala tudo (WM, barra, terminal, fontes, portais...)
-- **Com DE pré-instalado** (GNOME, KDE...) → modo coexistir, instala só o que falta
+O instalador é feito para **CachyOS / Arch Linux** e instala o ecossistema completo do Mango WM.
 
 ## Instalação Manual
 
@@ -95,14 +93,7 @@ cp -r .config/* ~/.config/
 
 ## Créditos
 
-Este rice é uma colcha de retalhos indecisa que não existiria sem os projetos base:
+## Créditos
 
-| Projeto | Autor | O que reaproveitamos |
-|---|---|---|
-| **[Event Horizon Dotfiles](https://github.com/Western-Stock2454/Event-Horizon-Dotfiles)** | [@Western-Stock2454](https://github.com/Western-Stock2454) | Estrutura do Mango WM, scripts auxiliares, temas do Rofi, keybinds base, configs de animação/decoração |
-| **[hobbyist-dotfiles](https://github.com/Gurjaka/hobbyist-dotfiles)** | [@Gurjaka](https://github.com/Gurjaka) | Fastfetch config, inspiração para organização de dotfiles, parte da estrutura de scripts |
-
-- **Tokyo Night** color palette por [Enkia](https://github.com/enkia/tokyo-night-vscode-theme)
 - **CachyOS** community pelas configs base e repo packages
-
-> *"Nada é criado do zero, tudo é remixado até parar de quebrar."* — Indecisius philosophy
+- **Tokyo Night** color palette por [Enkia](https://github.com/enkia/tokyo-night-vscode-theme)
