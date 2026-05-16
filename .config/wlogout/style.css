@@ -1,20 +1,22 @@
+/* Wlogout Theme - Catppuccin Mocha Style (matching Rofi/Waybar) */
+
 * {
     background-image: none;
     box-shadow: none;
-    font-family: "Google Sans Flex", "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 18px;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 16px;
     font-weight: 700;
     transition: all 0.18s ease-in-out;
 }
 
 window {
-    background-color: alpha(#0b1018, 0.72);
+    background-color: rgba(15, 15, 23, 0.72);
 }
 
 button {
-    color: #e5e9f0;
-    background-color: alpha(#1f2633, 0.72);
-    border: 2px solid alpha(#88c0d0, 0.10);
+    color: #cdd6f4;
+    background-color: rgba(30, 30, 46, 0.72);
+    border: 2px solid rgba(137, 180, 250, 0.10);
     border-radius: 22px;
     margin: 12px;
     padding: 84px 36px 28px 36px;
@@ -24,20 +26,20 @@ button {
 }
 
 button:focus {
-    color: #eceff4;
-    background-color: alpha(#2e3440, 0.88);
-    border-color: alpha(#a3be8c, 0.70);
+    color: #ffffff;
+    background-color: rgba(49, 50, 68, 0.88);
+    border-color: rgba(137, 180, 250, 0.70);
 }
 
 button:hover {
     color: #ffffff;
-    background-color: alpha(#3b4252, 0.92);
-    border-color: alpha(#88c0d0, 0.85);
+    background-color: rgba(59, 66, 82, 0.92);
+    border-color: rgba(137, 180, 250, 0.85);
 }
 
 button:active {
-    background-color: alpha(#4c566a, 0.92);
-    border-color: alpha(#bf616a, 0.90);
+    background-color: rgba(76, 86, 106, 0.92);
+    border-color: rgba(243, 139, 168, 0.90);
 }
 
 #shutdown {
