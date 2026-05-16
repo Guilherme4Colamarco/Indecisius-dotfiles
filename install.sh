@@ -1,11 +1,10 @@
 #!/bin/bash
 
 # ============================================
-# Indecisius Dotfiles - Universal Installer
+# Mango WM Dotfiles Installer
 # ============================================
-# Auto-detects distro and desktop environment.
-# Works on: Arch Linux barebones OR distros with pre-configured DE.
-# Supports: Arch Linux, CachyOS, Manjaro, EndeavourOS
+# For CachyOS / Arch Linux with Mango (Hyprland wrapper)
+# Barebones minimal install — no DE, just Mango + ecosystem
 # ============================================
 
 if [ -z "$BASH_VERSION" ]; then
@@ -55,19 +54,8 @@ print_info()    { echo -e "${INFO} $1"; }
 # Utility Functions
 # ============================================
 command_exists() { command -v "$1" &>/dev/null; }
-
-package_installed() {
-    case "$DISTRO" in
-        "arch") pacman -Qi "$1" &>/dev/null ;;
-        "fedora") rpm -q "$1" &>/dev/null ;;
-        "debian") dpkg -l "$1" 2>/dev/null | grep -q "^ii" ;;
-        *) return 1 ;;
-    esac
-}
-
-run_privileged() {
-    if [ "$EUID" -eq 0 ]; then "$@"; else sudo "$@"; fi
-}
+package_installed() { pacman -Qi "$1" &>/dev/null; }
+run_privileged() { if [ "$EUID" -eq 0 ]; then "$@"; else sudo "$@"; fi; }
 
 ask_confirmation() {
     local message="$1"
@@ -105,73 +93,31 @@ copy_config_with_backup() {
 # ============================================
 # Detection
 # ============================================
-detect_distro() {
-    print_header "🔍 Detecting Linux Distribution"
+detect_system() {
+    print_header "🔍 Detecting System"
     CACHYOS=false
 
     if [ -f /etc/os-release ]; then
         . /etc/os-release
         case "$ID" in
             "cachyos")
-                DISTRO="arch"; DISTRO_NAME="CachyOS"; CACHYOS=true ;;
-            "arch"|"manjaro"|"endeavouros"|"xerolinux")
-                DISTRO="arch"; DISTRO_NAME="Arch Linux" ;;
-            "fedora"|"nobara")
-                DISTRO="fedora"; DISTRO_NAME="Fedora" ;;
-            "debian"|"pika")
-                DISTRO="debian"; DISTRO_NAME="Debian/PikaOS" ;;
+                CACHYOS=true
+                print_success "CachyOS detected — Mango WM native support"
+                ;;
+            "arch"|"manjaro"|"endeavouros")
+                print_warning "Arch-based detected, but not CachyOS"
+                print_info "mangowm may not be available in standard repos."
+                print_info "You may need to build it manually or use hyprland."
+                ;;
             *)
-                print_warning "Distro '$ID' not explicitly supported. Trying Arch paths..."
-                DISTRO="arch"; DISTRO_NAME="$ID (Arch fallback)" ;;
+                print_error "This installer is designed for CachyOS / Arch Linux."
+                print_error "Distro '$ID' is not supported."
+                exit 1
+                ;;
         esac
     else
         print_error "Cannot detect distro"
         exit 1
-    fi
-
-    print_success "Detected: $DISTRO_NAME"
-}
-
-detect_de() {
-    print_header "🖥️  Detecting Desktop Environment"
-    HAS_DE=false
-    DE_NAME="none"
-
-    # Trust environment variables ONLY if the corresponding DE packages are actually installed
-    if [ -n "$XDG_CURRENT_DESKTOP" ]; then
-        DE_NAME="$XDG_CURRENT_DESKTOP"
-        HAS_DE=true
-    elif [ -n "$DESKTOP_SESSION" ]; then
-        DE_NAME="$DESKTOP_SESSION"
-        HAS_DE=true
-    fi
-
-    # Verify DE is actually installed (Arch)
-    if [ "$DISTRO" = "arch" ]; then
-        local de_verified=false
-        if pacman -Qi gnome-session &>/dev/null; then DE_NAME="GNOME"; de_verified=true; fi
-        if pacman -Qi plasma-workspace &>/dev/null; then DE_NAME="KDE Plasma"; de_verified=true; fi
-        if pacman -Qi xfce4-session &>/dev/null; then DE_NAME="XFCE"; de_verified=true; fi
-        if pacman -Qi cinnamon-session &>/dev/null; then DE_NAME="Cinnamon"; de_verified=true; fi
-        if [ "$CACHYOS" = true ] && pacman -Qi mangowm &>/dev/null; then DE_NAME="Mango"; de_verified=true; fi
-        if [ "$de_verified" = false ]; then
-            HAS_DE=false
-            DE_NAME="none"
-        else
-            HAS_DE=true
-        fi
-    fi
-
-    # Check display manager
-    if systemctl is-active display-manager &>/dev/null; then
-        HAS_DE=true
-    fi
-
-    if [ "$HAS_DE" = true ]; then
-        print_info "Desktop Environment detected: $DE_NAME"
-        print_info "Some base packages (polkit, portals, keyring) may already be installed."
-    else
-        print_info "No Desktop Environment detected — assuming minimal install"
     fi
 }
 
@@ -189,9 +135,7 @@ setup_aur() {
     fi
 
     print_section "Setting up AUR helper"
-    run_privileged pacman -S --needed --noconfirm git base-devel ca-certificates-utils
-    # Update CA certs to prevent TLS errors in containers
-    run_privileged update-ca-trust 2>/dev/null || true
+    run_privileged pacman -S --needed --noconfirm git base-devel
 
     cd /tmp
     rm -rf yay
@@ -204,7 +148,6 @@ setup_aur() {
         return 0
     fi
 
-    # Fallback: try paru
     cd /tmp
     rm -rf paru
     if git clone https://aur.archlinux.org/paru.git 2>/dev/null; then
@@ -216,8 +159,7 @@ setup_aur() {
         return 0
     fi
 
-    print_error "Failed to install AUR helper (yay/paru). Network or TLS issue?"
-    print_warning "You will need to manually install AUR packages: ${AUR_PKGS[*]}"
+    print_error "Failed to install AUR helper."
     return 1
 }
 
@@ -238,11 +180,7 @@ install_packages() {
 
     if [ ${#to_install[@]} -gt 0 ]; then
         print_info "Installing ${#to_install[@]} packages..."
-        case "$DISTRO" in
-            "arch") run_privileged pacman -S --needed --noconfirm "${to_install[@]}" ;;
-            "fedora") run_privileged dnf install -y "${to_install[@]}" ;;
-            "debian") run_privileged apt install -y "${to_install[@]}" ;;
-        esac
+        run_privileged pacman -S --needed --noconfirm "${to_install[@]}"
         print_success "Installed ${#to_install[@]} packages"
     fi
 }
@@ -269,8 +207,7 @@ install_aur_packages() {
     fi
 
     if [ -z "$aur_helper" ]; then
-        print_error "No AUR helper available. Skipping AUR packages: ${to_install[*]}"
-        print_info "Install yay or paru manually, then re-run this script."
+        print_error "No AUR helper available. Skipping: ${to_install[*]}"
         return 1
     fi
 
@@ -283,35 +220,10 @@ install_aur_packages() {
 # Main Logic
 # ============================================
 main() {
-    print_header "🚀 Indecisius Dotfiles Installer"
-    echo -e "${CYAN}Dotfiles indecisos — porque decidir é difícil.${NC}\n"
+    print_header "🥭 Mango WM Dotfiles Installer"
+    echo -e "${CYAN}Minimal rice for CachyOS.${NC}\n"
 
-    detect_distro
-    detect_de
-
-    # Determine mode
-    if [ "$HAS_DE" = true ]; then
-        print_section "Mode Selection"
-        echo -e "${WHITE}A Desktop Environment ($DE_NAME) was detected.${NC}"
-        echo -e "${WHITE}Choose installation mode:${NC}"
-        echo -e "  ${ARROW} 1) Coexist — install only missing tools, keep your DE"
-        echo -e "  ${ARROW} 2) Replace — full minimal install (may conflict with DE)"
-        echo
-        echo -n "Enter choice (1-2) [1]: "
-        read -r mode_choice
-        mode_choice="${mode_choice:-1}"
-
-        if [ "$mode_choice" = "2" ]; then
-            MODE="minimal"
-            print_info "Minimal mode selected — installing everything"
-        else
-            MODE="coexist"
-            print_info "Coexist mode selected — installing only missing packages"
-        fi
-    else
-        MODE="minimal"
-        print_info "Minimal installation mode (no DE detected)"
-    fi
+    detect_system
 
     if ! ask_confirmation "Continue with installation?"; then
         echo -e "${YELLOW}Cancelled.${NC}"
@@ -320,75 +232,51 @@ main() {
 
     # Update system
     print_section "Updating System"
-    case "$DISTRO" in
-        "arch") run_privileged pacman -Syu --noconfirm ;;
-        "fedora") run_privileged dnf update -y ;;
-        "debian") run_privileged apt update && run_privileged apt upgrade -y ;;
-    esac
+    run_privileged pacman -Syu --noconfirm
     print_success "System updated"
 
-    # Core packages (always)
+    # Core packages
     print_section "Installing Core Packages"
-    if [ "$CACHYOS" = true ]; then
-        WM_PKG="mangowm"
-    else
-        WM_PKG="hyprland"
-    fi
-
     CORE_PKGS=(
-        "$WM_PKG" wlr-randr
+        mangowm wlr-randr
         waybar rofi mako
         kitty fish
         cliphist wl-clipboard
         grim slurp swappy
         brightnessctl
+        gnome-keyring polkit polkit-gnome
+        xdg-desktop-portal xdg-desktop-portal-wlr
+        dbus
         ttf-jetbrains-mono-nerd ttf-font-awesome
     )
+    install_packages "${CORE_PKGS[@]}"
 
-    if [ "$MODE" = "minimal" ]; then
-        CORE_PKGS+=(
-            gnome-keyring polkit polkit-gnome
-            xdg-desktop-portal xdg-desktop-portal-wlr
-            dbus
-        )
+    # AUR packages
+    AUR_PKGS=()
+    if ! command_exists rofi && ! package_installed rofi; then
+        AUR_PKGS+=("rofi-wayland")
+    fi
+    if ! package_installed waypaper; then
+        AUR_PKGS+=("waypaper")
+    fi
+    if ! package_installed wlogout; then
+        AUR_PKGS+=("wlogout")
+    fi
+    if ! command_exists awww && ! package_installed awww; then
+        AUR_PKGS+=("awww")
     fi
 
-    # Install based on distro
-    if [ "$DISTRO" = "arch" ]; then
-        install_packages "${CORE_PKGS[@]}"
-
-        AUR_PKGS=()
-        if ! command_exists rofi && ! package_installed rofi; then
-            AUR_PKGS+=("rofi-wayland")
+    if [ ${#AUR_PKGS[@]} -gt 0 ]; then
+        setup_aur || print_warning "AUR helper unavailable — skipping AUR packages"
+        if command_exists yay || command_exists paru; then
+            install_aur_packages "${AUR_PKGS[@]}"
         fi
-        if ! package_installed waypaper; then
-            AUR_PKGS+=("waypaper")
-        fi
-        if ! package_installed wlogout; then
-            AUR_PKGS+=("wlogout")
-        fi
-        if ! command_exists awww && ! package_installed awww; then
-            AUR_PKGS+=("awww")
-        fi
-
-        if [ ${#AUR_PKGS[@]} -gt 0 ]; then
-            # Try AUR setup, but don't abort if it fails (network/TLS issues in containers, etc.)
-            setup_aur || print_warning "AUR helper unavailable — skipping AUR packages"
-            if command_exists yay || command_exists paru; then
-                install_aur_packages "${AUR_PKGS[@]}"
-            fi
-        fi
-    else
-        print_warning "Non-Arch distro detected. Please install equivalent packages manually."
-        print_info "Required: mangowm, waybar, rofi, mako, kitty, fish, awww, waypaper, cliphist, grim, slurp, swappy, wlogout"
     fi
 
     # Copy configs
     print_section "Installing Configuration Files"
-
     mkdir -p ~/.config
 
-    # Backup existing fish prompt if it's a symlink
     if [ -L ~/.config/fish/functions/fish_prompt.fish ]; then
         rm ~/.config/fish/functions/fish_prompt.fish
     fi
@@ -403,19 +291,11 @@ main() {
     copy_config_with_backup "${REPO_ROOT}/.config/fish" ~/.config
     copy_config_with_backup "${REPO_ROOT}/.config/waypaper" ~/.config
 
-    if [ "$MODE" = "minimal" ]; then
-        copy_config_with_backup "${REPO_ROOT}/.config/EventHorizon" ~/.config
-    fi
-
     # Post-install
     print_section "Post-Installation"
+    print_info "Setting up user directories..."
+    xdg-user-dirs-update 2>/dev/null || true
 
-    if [ "$MODE" = "minimal" ]; then
-        print_info "Setting up user directories..."
-        xdg-user-dirs-update 2>/dev/null || true
-    fi
-
-    # Fish as default shell?
     if command_exists fish; then
         if [ "$SHELL" != "$(which fish)" ]; then
             if ask_confirmation "Set fish as your default shell?" "n"; then
@@ -426,11 +306,10 @@ main() {
     fi
 
     print_header "🎉 Installation Complete!"
-    echo -e "${GREEN}Indecisius dotfiles installed successfully!${NC}"
+    echo -e "${GREEN}Mango WM dotfiles installed successfully!${NC}"
     echo -e "${WHITE}What's been set up:${NC}"
     echo -e "  ${CHECKMARK} Mango WM + Waybar + Rofi + Mako"
     echo -e "  ${CHECKMARK} Kitty terminal + Fish shell"
-    echo -e "  ${CHECKMARK} awww wallpaper daemon + waypaper"
     echo -e "  ${CHECKMARK} Clipboard, screenshots, power menu"
     echo -e "  ${CHECKMARK} Configs backed up with .bak extension"
     echo -e "${WHITE}Next steps:${NC}"
