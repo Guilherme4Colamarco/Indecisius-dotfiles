@@ -24,7 +24,7 @@ selected=$(printf '%b' "$menu" | rofi -dmenu -i -show-icons -p 'Wallpaper' -them
 # Find full path from basename
 for img in "${images[@]}"; do
     if [ "$(basename "$img")" = "$selected" ]; then
-        swaybg -i "$img" -m fill &
+        awww img "$img"
         notify-send -i "$img" "Wallpaper" "$(basename "$img")"
         exit 0
     fi
