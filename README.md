@@ -17,6 +17,7 @@ Este repositório contém as configurações pessoais de desktop para CachyOS, m
 | **Terminal** | [Kitty](https://sw.kovidgoyal.net/kitty/) |
 | **Shell** | [Fish](https://fishshell.com/) com emoji-powerline |
 | **Clipboard** | [cliphist](https://github.com/sentriz/cliphist) |
+| **Wallpaper** | [awww](https://codeberg.org/LGFae/awww) (sucessor do swww) + [waypaper](https://github.com/anufrievroman/waypaper) |
 | **Screenshots** | [grim](https://sr.ht/~emersion/grim/) + [slurp](https://github.com/emersion/slurp) + [swappy](https://github.com/jtheoof/swappy) |
 | **Power Menu** | [wlogout](https://github.com/ArtsyMacaw/wlogout) |
 | **Color Scheme** | Tokyo Night (estático, matugen desabilitado) |
