@@ -137,6 +137,7 @@ detect_de() {
     HAS_DE=false
     DE_NAME="none"
 
+    # Trust environment variables ONLY if the corresponding DE packages are actually installed
     if [ -n "$XDG_CURRENT_DESKTOP" ]; then
         DE_NAME="$XDG_CURRENT_DESKTOP"
         HAS_DE=true
@@ -145,12 +146,20 @@ detect_de() {
         HAS_DE=true
     fi
 
-    # Check installed DE packages (Arch)
+    # Verify DE is actually installed (Arch)
     if [ "$DISTRO" = "arch" ]; then
-        if pacman -Qi gnome-session &>/dev/null; then DE_NAME="GNOME"; HAS_DE=true; fi
-        if pacman -Qi plasma-workspace &>/dev/null; then DE_NAME="KDE Plasma"; HAS_DE=true; fi
-        if pacman -Qi xfce4-session &>/dev/null; then DE_NAME="XFCE"; HAS_DE=true; fi
-        if pacman -Qi cinnamon-session &>/dev/null; then DE_NAME="Cinnamon"; HAS_DE=true; fi
+        local de_verified=false
+        if pacman -Qi gnome-session &>/dev/null; then DE_NAME="GNOME"; de_verified=true; fi
+        if pacman -Qi plasma-workspace &>/dev/null; then DE_NAME="KDE Plasma"; de_verified=true; fi
+        if pacman -Qi xfce4-session &>/dev/null; then DE_NAME="XFCE"; de_verified=true; fi
+        if pacman -Qi cinnamon-session &>/dev/null; then DE_NAME="Cinnamon"; de_verified=true; fi
+        if [ "$CACHYOS" = true ] && pacman -Qi mangowm &>/dev/null; then DE_NAME="Mango"; de_verified=true; fi
+        if [ "$de_verified" = false ]; then
+            HAS_DE=false
+            DE_NAME="none"
+        else
+            HAS_DE=true
+        fi
     fi
 
     # Check display manager
@@ -174,17 +183,42 @@ setup_aur() {
         print_success "yay already installed"
         return 0
     fi
+    if command_exists paru; then
+        print_success "paru already installed"
+        return 0
+    fi
 
-    print_section "Setting up AUR (yay)"
-    run_privileged pacman -S --needed --noconfirm git base-devel
+    print_section "Setting up AUR helper"
+    run_privileged pacman -S --needed --noconfirm git base-devel ca-certificates-utils
+    # Update CA certs to prevent TLS errors in containers
+    run_privileged update-ca-trust 2>/dev/null || true
+
     cd /tmp
     rm -rf yay
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si --noconfirm
-    cd ~
-    rm -rf /tmp/yay
-    print_success "yay installed"
+    if git clone https://aur.archlinux.org/yay.git 2>/dev/null; then
+        cd yay
+        makepkg -si --noconfirm
+        cd ~
+        rm -rf /tmp/yay
+        print_success "yay installed"
+        return 0
+    fi
+
+    # Fallback: try paru
+    cd /tmp
+    rm -rf paru
+    if git clone https://aur.archlinux.org/paru.git 2>/dev/null; then
+        cd paru
+        makepkg -si --noconfirm
+        cd ~
+        rm -rf /tmp/paru
+        print_success "paru installed"
+        return 0
+    fi
+
+    print_error "Failed to install AUR helper (yay/paru). Network or TLS issue?"
+    print_warning "You will need to manually install AUR packages: ${AUR_PKGS[*]}"
+    return 1
 }
 
 # ============================================
@@ -225,11 +259,24 @@ install_aur_packages() {
         fi
     done
 
-    if [ ${#to_install[@]} -gt 0 ]; then
-        print_info "Installing ${#to_install[@]} AUR packages..."
-        yay -S --needed --noconfirm "${to_install[@]}"
-        print_success "Installed AUR packages"
+    if [ ${#to_install[@]} -eq 0 ]; then
+        return 0
     fi
+
+    local aur_helper=""
+    if command_exists yay; then aur_helper="yay"
+    elif command_exists paru; then aur_helper="paru"
+    fi
+
+    if [ -z "$aur_helper" ]; then
+        print_error "No AUR helper available. Skipping AUR packages: ${to_install[*]}"
+        print_info "Install yay or paru manually, then re-run this script."
+        return 1
+    fi
+
+    print_info "Installing ${#to_install[@]} AUR packages via $aur_helper..."
+    $aur_helper -S --needed --noconfirm "${to_install[@]}"
+    print_success "Installed AUR packages"
 }
 
 # ============================================
@@ -282,13 +329,18 @@ main() {
 
     # Core packages (always)
     print_section "Installing Core Packages"
+    if [ "$CACHYOS" = true ]; then
+        WM_PKG="mangowm"
+    else
+        WM_PKG="hyprland"
+    fi
+
     CORE_PKGS=(
-        mangowm wlr-randr
+        "$WM_PKG" wlr-randr
         waybar rofi mako
         kitty fish
-        awww waypaper
         cliphist wl-clipboard
-        grim slurp swappy wlogout
+        grim slurp swappy
         brightnessctl
         ttf-jetbrains-mono-nerd ttf-font-awesome
     )
@@ -304,14 +356,27 @@ main() {
     # Install based on distro
     if [ "$DISTRO" = "arch" ]; then
         install_packages "${CORE_PKGS[@]}"
-        setup_aur
 
         AUR_PKGS=()
         if ! command_exists rofi && ! package_installed rofi; then
             AUR_PKGS+=("rofi-wayland")
         fi
+        if ! package_installed waypaper; then
+            AUR_PKGS+=("waypaper")
+        fi
+        if ! package_installed wlogout; then
+            AUR_PKGS+=("wlogout")
+        fi
+        if ! command_exists awww && ! package_installed awww; then
+            AUR_PKGS+=("awww")
+        fi
+
         if [ ${#AUR_PKGS[@]} -gt 0 ]; then
-            install_aur_packages "${AUR_PKGS[@]}"
+            # Try AUR setup, but don't abort if it fails (network/TLS issues in containers, etc.)
+            setup_aur || print_warning "AUR helper unavailable — skipping AUR packages"
+            if command_exists yay || command_exists paru; then
+                install_aur_packages "${AUR_PKGS[@]}"
+            fi
         fi
     else
         print_warning "Non-Arch distro detected. Please install equivalent packages manually."
