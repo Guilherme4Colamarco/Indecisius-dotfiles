@@ -6,6 +6,7 @@
 
   "modules-left":[
     "custom/logo",
+    "backlight",
     "custom/mpris",
     "ext/workspaces"
 ],
