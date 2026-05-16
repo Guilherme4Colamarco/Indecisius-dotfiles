@@ -1,0 +1,8 @@
+@theme "spotlight"
+
+configuration {
+  font: "Google Sans Flex 13";
+  drun-display-format: "{name}";
+  show-icons: true;
+  icon-theme: "Papirus";
+}

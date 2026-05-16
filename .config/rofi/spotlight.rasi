@@ -1,0 +1,97 @@
+* {
+  bg:           #1e1e1e33;
+  bg-input:     #3c3c3c44;
+  bg-selected:  #5082dc60;
+  fg:           #f5f5f5;
+  fg-placeholder: #f5f5f580;
+  border-color: #ffffff26;
+
+  font: "Google Sans Flex 13";
+  background-color: transparent;
+  text-color: @fg;
+  padding: 0px;
+  margin: 0px;
+}
+
+window {
+  location: center;
+  anchor:   center;
+  width:    560px;
+  y-offset: -120px;
+  border-radius: 18px;
+  background-color: @bg;
+  border: 1px;
+  border-color: @border-color;
+  padding: 16px;
+  spacing: 0px;
+  fullscreen: false;
+}
+
+mainbox {
+  spacing: 12px;
+  padding: 0px;
+  children: [inputbar, listview];
+}
+
+inputbar {
+  spacing: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background-color: @bg-input;
+  border: 1px;
+  border-color: @border-color;
+  children: [icon-search, entry];
+}
+
+icon-search {
+  expand: false;
+  filename: "search";
+  size: 20px;
+  vertical-align: 0.5;
+  horizontal-align: 0.5;
+}
+
+entry {
+  placeholder: "Search";
+  placeholder-color: @fg-placeholder;
+  cursor: text;
+  vertical-align: 0.5;
+}
+
+prompt {
+  enabled: false;
+}
+
+listview {
+  lines: 8;
+  spacing: 4px;
+  fixed-height: false;
+  dynamic: true;
+  scrollbar: false;
+  cycle: true;
+  padding: 0px 4px;
+}
+
+element {
+  padding: 8px 12px;
+  spacing: 14px;
+  border-radius: 10px;
+  orientation: horizontal;
+  children: [element-icon, element-text];
+}
+
+element-icon {
+  size: 32px;
+  vertical-align: 0.5;
+  horizontal-align: 0.5;
+}
+
+element-text {
+  expand: true;
+  vertical-align: 0.5;
+  font: "Google Sans Flex 12";
+}
+
+element selected {
+  background-color: @bg-selected;
+}

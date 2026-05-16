@@ -1,0 +1,65 @@
+* {
+    background-image: none;
+    box-shadow: none;
+    font-family: "Google Sans Flex", "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    transition: all 0.18s ease-in-out;
+}
+
+window {
+    background-color: alpha(#0b1018, 0.72);
+}
+
+button {
+    color: #e5e9f0;
+    background-color: alpha(#1f2633, 0.72);
+    border: 2px solid alpha(#88c0d0, 0.10);
+    border-radius: 22px;
+    margin: 12px;
+    padding: 84px 36px 28px 36px;
+    background-repeat: no-repeat;
+    background-position: center 34%;
+    background-size: 72px;
+}
+
+button:focus {
+    color: #eceff4;
+    background-color: alpha(#2e3440, 0.88);
+    border-color: alpha(#a3be8c, 0.70);
+}
+
+button:hover {
+    color: #ffffff;
+    background-color: alpha(#3b4252, 0.92);
+    border-color: alpha(#88c0d0, 0.85);
+}
+
+button:active {
+    background-color: alpha(#4c566a, 0.92);
+    border-color: alpha(#bf616a, 0.90);
+}
+
+#shutdown {
+    background-image: image(url("/home/geko/.config/wlogout/icons/power.png"));
+}
+
+#reboot {
+    background-image: image(url("/home/geko/.config/wlogout/icons/restart.png"));
+}
+
+#logout {
+    background-image: image(url("/home/geko/.config/wlogout/icons/logout.png"));
+}
+
+#suspend {
+    background-image: image(url("/home/geko/.config/wlogout/icons/sleep.png"));
+}
+
+#hibernate {
+    background-image: image(url("/home/geko/.config/wlogout/icons/hibernate.png"));
+}
+
+#lock {
+    background-image: image(url("/home/geko/.config/wlogout/icons/lock.png"));
+}
