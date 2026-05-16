@@ -30,8 +30,7 @@ selected=$(printf '%b' "$menu" | rofi -dmenu -i -show-icons -p 'Wallpaper' -them
 # Find full path from basename
 for img in "${images[@]}"; do
     if [ "$(basename "$img")" = "$selected" ]; then
-        awww img "$img"
-        notify-send -i "$img" "Wallpaper" "$(basename "$img")"
+        SWWW_TRANSITION=any awww img "$img"
         exit 0
     fi
 done

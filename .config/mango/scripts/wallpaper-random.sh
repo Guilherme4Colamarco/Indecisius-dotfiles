@@ -20,8 +20,5 @@ mapfile -t images < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( \
 selected="${images[RANDOM % ${#images[@]}]}"
 
 # Set with awww (daemon handles transition)
-awww img "$selected"
-
-# Notify
-name=$(basename "$selected")
-notify-send -i "$selected" "Wallpaper" "$name"
+# Random transition
+SWWW_TRANSITION=any awww img "$selected"
