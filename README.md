@@ -55,15 +55,43 @@ Este repositório contém as configurações pessoais de desktop para CachyOS, m
 | `SUPER + Tab` | Mango overview |
 | `SUPER + Shift + S` | Screenshot area → swappy |
 
-## Instalação
+## Instalação Rápida (Automática)
 
 ```bash
-# Clone
-gh repo clone <seu-user>/Indecisius-dotfiles ~/.config
-# ou manualmente copie cada pasta para ~/.config/
+git clone https://github.com/<seu-user>/Indecisius-dotfiles.git
+cd Indecisius-dotfiles
+./install.sh
 ```
 
-> ⚠️ Requer: `mangowm`, `waybar`, `rofi-wayland`, `mako`, `kitty`, `fish`, `cliphist`, `grim`, `slurp`, `swappy`, `wlogout`, `brightnessctl`, `wl-clipboard`
+O instalador detecta automaticamente sua distro e ambiente:
+- **Arch/CachyOS barebones** → instala tudo (WM, barra, terminal, fontes, portais...)
+- **Com DE pré-instalado** (GNOME, KDE...) → modo coexistir, instala só o que falta
+
+## Instalação Manual
+
+```bash
+# Copiar configs para ~/.config/
+cp -r .config/* ~/.config/
+# ou stow / chezmoi / symlink
+```
+
+## Dependências
+
+| Pacote | Função |
+|---|---|
+| `mangowm` | Window Manager |
+| `waybar` | Barra superior |
+| `rofi` / `rofi-wayland` | Launcher |
+| `mako` | Notificações |
+| `kitty` | Terminal |
+| `fish` | Shell |
+| `awww` | Wallpaper daemon |
+| `waypaper` | GUI de wallpapers |
+| `cliphist` | Histórico de clipboard |
+| `grim` + `slurp` + `swappy` | Screenshots |
+| `wlogout` | Power menu |
+| `brightnessctl` | Brilho da tela |
+| `wl-clipboard` | Clipboard Wayland |
 
 ## Créditos
 
