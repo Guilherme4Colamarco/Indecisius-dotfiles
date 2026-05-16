@@ -2,51 +2,45 @@
     font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
     font-size: 12px;
     min-height: 0;
+    font-weight: 600;
 }
 
+/* Catppuccin Mocha palette */
+@define-color base      #1e1e2e;
+@define-color mantle    #181825;
+@define-color crust     #11111b;
+@define-color text      #cdd6f4;
+@define-color subtext1  #bac2de;
+@define-color surface0  #313244;
+@define-color surface1  #45475a;
+@define-color surface2  #585b70;
+@define-color lavender  #b4befe;
+@define-color blue      #89b4fa;
+@define-color sapphire  #74c7ec;
+@define-color sky       #89dceb;
+@define-color teal      #94e2d5;
+@define-color green     #a6e3a1;
+@define-color yellow    #f9e2af;
+@define-color peach     #fab387;
+@define-color maroon    #eba0ac;
+@define-color red       #f38ba8;
+@define-color mauve     #cba6f7;
+@define-color pink      #f5c2e7;
+@define-color flamingo  #f2cdcd;
+@define-color rosewater #f5e0dc;
+
 window#waybar {
-    background-color: rgba(15, 15, 23, 0.75);
-    border-radius: 0 0 12px 12px;
-    color: #a9b1d6;
-    transition: background-color 0.3s;
-    padding: 2px 8px;
+    background-color: transparent;
+    color: @text;
+    padding: 4px 8px;
 }
 
 window#waybar.hidden {
     opacity: 0.2;
 }
 
-#workspaces {
-    background: rgba(30, 30, 46, 0.6);
-    border-radius: 12px;
-    padding: 0 8px;
-    margin: 4px 0;
-}
-
-#workspaces button {
-    padding: 0 8px;
-    color: #565f89;
-    background: transparent;
-    border: none;
-    border-radius: 10px;
-    margin: 2px 2px;
-}
-
-#workspaces button:hover {
-    background: rgba(122, 162, 247, 0.15);
-    color: #c0caf5;
-}
-
-#workspaces button.active {
-    background: rgba(122, 162, 247, 0.25);
-    color: #7aa2f7;
-}
-
-#workspaces button.urgent {
-    background-color: rgba(247, 118, 142, 0.3);
-    color: #f7768e;
-}
-
+/* Pills flutuantes — fundo surface0 com borda sutil */
+#workspaces,
 #clock,
 #cpu,
 #memory,
@@ -59,84 +53,124 @@ window#waybar.hidden {
 #custom-power,
 #custom-logo,
 #custom-mpris {
-    background: rgba(30, 30, 46, 0.6);
-    border-radius: 12px;
-    padding: 2px 12px;
-    margin: 4px 2px;
-    color: #a9b1d6;
+    background: @surface0;
+    border: 1px solid @surface1;
+    border-radius: 10px;
+    padding: 2px 10px;
+    margin: 2px 3px;
+    color: @text;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* Workspaces */
+#workspaces {
+    padding: 2px 6px;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    color: @subtext1;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    margin: 1px 2px;
+    font-weight: 700;
+}
+
+#workspaces button:hover {
+    background: @surface1;
+    color: @text;
+}
+
+#workspaces button.active {
+    background: @mauve;
+    color: @crust;
+}
+
+#workspaces button.urgent {
+    background-color: @red;
+    color: @crust;
+}
+
+/* Logo */
 #custom-logo {
-    color: #7aa2f7;
+    color: @lavender;
+    font-weight: bold;
+}
+
+/* Clock — centro */
+#clock {
+    color: @text;
     font-weight: bold;
     padding: 2px 14px;
 }
 
-#clock {
-    color: #e0af68;
-    font-weight: bold;
-}
-
+/* Módulos direita com cores Catppuccin sutis */
 #cpu {
-    color: #ff9e64;
+    color: @peach;
 }
 
 #memory {
-    color: #9ece6a;
+    color: @green;
 }
 
 #disk {
-    color: #bb9af7;
+    color: @yellow;
 }
 
 #network {
-    color: #7dcfff;
+    color: @sky;
 }
 
 #pulseaudio {
-    color: #c0caf5;
+    color: @pink;
 }
 
 #pulseaudio.muted {
-    color: #565f89;
+    color: @surface2;
 }
 
 #battery {
-    color: #9ece6a;
+    color: @teal;
 }
 
 #battery.warning {
-    color: #e0af68;
+    color: @yellow;
 }
 
 #battery.critical {
-    color: #f7768e;
+    color: @red;
 }
 
 #temperature {
-    color: #ff9e64;
+    color: @maroon;
 }
 
 #temperature.critical {
-    color: #f7768e;
+    color: @red;
 }
 
 #custom-power {
-    color: #f7768e;
-    padding-right: 14px;
+    color: @red;
+    padding-right: 12px;
 }
 
 #custom-power:hover {
-    background: rgba(247, 118, 142, 0.2);
+    background: @surface1;
 }
 
+#backlight {
+    color: @yellow;
+}
+
+/* Tooltip */
 tooltip {
-    background: rgba(15, 15, 23, 0.95);
-    border: 1px solid rgba(122, 162, 247, 0.2);
+    background: @crust;
+    border: 1px solid @surface1;
     border-radius: 10px;
     padding: 8px;
 }
 
 tooltip label {
-    color: #c0caf5;
+    color: @text;
 }

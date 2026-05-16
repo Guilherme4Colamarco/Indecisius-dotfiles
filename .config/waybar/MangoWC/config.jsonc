@@ -19,11 +19,7 @@
 },
 
 "ext/workspaces": {
-  "format": "{icon}",
-  "format-icons": {
-    "active": "",
-    "default": ""
-  },
+  "format": "{name}",
   "ignore-hidden": true,
   "on-click": "activate",
   "on-click-right": "deactivate",
