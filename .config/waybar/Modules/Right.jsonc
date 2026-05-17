@@ -6,9 +6,7 @@
         "memory",
         "disk",
         "network",
-        "pulseaudio",
-        "backlight",
-        "battery"
+        "pulseaudio"
     ]
 
 }
