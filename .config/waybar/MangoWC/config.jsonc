@@ -7,6 +7,7 @@
   "modules-left":[
     "custom/logo",
     "custom/brightness",
+    "wlr/taskbar",
     "custom/mpris",
     "ext/workspaces"
 ],
@@ -20,6 +21,15 @@
     "on-click": "~/.config/mango/scripts/brightness-ddc.sh up",
     "on-click-right": "~/.config/mango/scripts/brightness-ddc.sh down",
     "tooltip": true
+  },
+
+"wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 16,
+    "tooltip-format": "{title}",
+    "on-click": "minimize-raise",
+    "on-click-middle": "close",
+    "markup": true
   },
 
 "custom/logo": {

@@ -53,7 +53,8 @@ window#waybar.hidden {
 #custom-power,
 #custom-logo,
 #custom-mpris,
-#custom-brightness {
+#custom-brightness,
+#taskbar {
     background: @surface0;
     border: 1px solid @surface1;
     border-radius: 12px;
@@ -166,6 +167,32 @@ window#waybar.hidden {
 
 #backlight {
     color: @yellow;
+}
+
+/* Taskbar — mostra só minimized */
+#taskbar button:not(.minimized) {
+    opacity: 0;
+    min-width: 0px;
+    min-height: 0px;
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+#taskbar button.minimized {
+    background: @surface0;
+    border: 1px solid @surface1;
+    border-radius: 12px;
+    padding: 4px 12px;
+    margin: 3px 4px;
+    color: @text;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#taskbar button.minimized:hover {
+    background: @surface1;
 }
 
 /* Tooltip */
