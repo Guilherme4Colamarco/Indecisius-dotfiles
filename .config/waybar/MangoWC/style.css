@@ -98,6 +98,10 @@ window#waybar.hidden {
     font-weight: bold;
 }
 
+#custom-brightness {
+    color: @yellow;
+}
+
 /* Clock — centro */
 #clock {
     color: @text;

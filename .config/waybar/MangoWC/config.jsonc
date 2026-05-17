@@ -6,10 +6,21 @@
 
   "modules-left":[
     "custom/logo",
-    "backlight",
+    "custom/brightness",
     "custom/mpris",
     "ext/workspaces"
 ],
+
+  "custom/brightness": {
+    "exec": "~/.config/mango/scripts/brightness-ddc.sh",
+    "return-type": "json",
+    "interval": 5,
+    "on-scroll-up": "~/.config/mango/scripts/brightness-ddc.sh up",
+    "on-scroll-down": "~/.config/mango/scripts/brightness-ddc.sh down",
+    "on-click": "~/.config/mango/scripts/brightness-ddc.sh up",
+    "on-click-right": "~/.config/mango/scripts/brightness-ddc.sh down",
+    "tooltip": true
+  },
 
 "custom/logo": {
   "format" : "󰣇   MangoWM",
