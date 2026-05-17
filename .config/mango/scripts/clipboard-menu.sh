@@ -109,8 +109,8 @@ done <<< "$list_raw"
 selected=$(printf '%b' "$menu_items" | rofi -dmenu -i \
   -show-icons -p '󰅌  ' \
   -theme "$theme" \
-  -kb-custom-1 "Shift+Return" \
-  -mesg "Enter: copy  |  Shift+Enter: delete" \
+  -kb-custom-1 "Ctrl+d" \
+  -mesg "Enter: copy  |  Ctrl+D: delete" \
   2>/dev/null) || exit 0
 
 [ -n "$selected" ] || exit 0
