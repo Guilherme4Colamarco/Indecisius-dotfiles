@@ -68,6 +68,7 @@ print_info()    { echo -e "${INFO} $1"; }
 # ============================================
 command_exists() { command -v "$1" &>/dev/null; }
 package_installed() { pacman -Qi "$1" &>/dev/null; }
+package_available() { pacman -Si "$1" &>/dev/null; }
 
 run() {
     if [ "$DRY_RUN" -eq 1 ]; then
@@ -186,6 +187,36 @@ copy_tree_contents_with_backup() {
     while IFS= read -r -d '' item; do
         copy_path_with_backup "$item" "$dest_dir"
     done < <(find "$source_dir" -mindepth 1 -maxdepth 1 -print0 | sort -z)
+}
+
+validate_repo_layout() {
+    local required_paths=(
+        "${REPO_ROOT}/.config/mango"
+        "${REPO_ROOT}/.config/waybar"
+        "${REPO_ROOT}/.config/wofi"
+    )
+
+    for path in "${required_paths[@]}"; do
+        if [ ! -d "$path" ]; then
+            print_error "Repository layout check failed: missing $path"
+            print_info "Run this script from a complete Indecisius-dotfiles checkout."
+            exit 1
+        fi
+    done
+
+    print_success "Repository layout verified"
+}
+
+install_session_entry() {
+    local session_source="${REPO_ROOT}/.config/mango/mango.desktop"
+    local session_dest="${HOME}/.local/share/wayland-sessions"
+
+    if [ ! -f "$session_source" ]; then
+        print_warning "Mango session file not found; skipping display-manager session entry"
+        return 0
+    fi
+
+    copy_path_with_backup "$session_source" "$session_dest"
 }
 
 # ============================================
@@ -354,12 +385,17 @@ setup_aur() {
 install_packages() {
     local packages=("$@")
     local to_install=()
+    local unavailable=()
 
     for pkg in "${packages[@]}"; do
         if package_installed "$pkg"; then
             print_success "Already installed: $pkg"
-        else
+        elif package_available "$pkg"; then
+            print_info "Will install: $pkg"
             to_install+=("$pkg")
+        else
+            print_warning "Not found in enabled pacman repos: $pkg"
+            unavailable+=("$pkg")
         fi
     done
 
@@ -368,6 +404,24 @@ install_packages() {
         run_privileged pacman -S --needed --noconfirm "${to_install[@]}"
         print_success "Package step complete: ${to_install[*]}"
     fi
+
+    if [ ${#unavailable[@]} -gt 0 ]; then
+        UNAVAILABLE_REPO_PKGS+=("${unavailable[@]}")
+        print_warning "Repo-unavailable packages may need AUR/manual install: ${unavailable[*]}"
+    fi
+}
+
+add_known_aur_fallbacks() {
+    local pkg
+
+    for pkg in "${UNAVAILABLE_REPO_PKGS[@]:-}"; do
+        case "$pkg" in
+            mangowm|matugen)
+                AUR_PKGS+=("$pkg")
+                print_info "Adding AUR fallback for repo-unavailable package: $pkg"
+                ;;
+        esac
+    done
 }
 
 install_aur_packages() {
@@ -406,6 +460,7 @@ install_aur_packages() {
 # ============================================
 main() {
     parse_args "$@"
+    UNAVAILABLE_REPO_PKGS=()
 
     print_header "🥭 Indecisius Dotfiles Installer"
     echo -e "${CYAN}MangoWM-focused rice for CachyOS.${NC}\n"
@@ -413,6 +468,7 @@ main() {
         print_warning "Dry-run mode: no packages/files will be changed. Use --apply to install."
     fi
 
+    validate_repo_layout
     detect_system
 
     if ! ask_confirmation "Continue with installation?"; then
@@ -429,19 +485,21 @@ main() {
     CORE_PKGS=(
         mangowm wlr-randr
         waybar wofi cava mako matugen jq
-        kitty fish starship zoxide
+        kitty fish starship zoxide fastfetch
         cliphist wl-clipboard
         grim slurp swappy
-        brightnessctl
+        brightnessctl pavucontrol pamixer playerctl
         gnome-keyring polkit polkit-gnome
         xdg-desktop-portal xdg-desktop-portal-wlr xdg-user-dirs
+        nwg-look qt5ct qt6ct gtk3 gtk4
         dbus
-        ttf-jetbrains-mono-nerd ttf-font-awesome
+        ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji
     )
     install_packages "${CORE_PKGS[@]}"
 
     print_section "Installing Optional AUR Packages"
     AUR_PKGS=()
+    add_known_aur_fallbacks
     if ! package_installed waypaper; then AUR_PKGS+=(waypaper); fi
     if ! package_installed wlogout; then AUR_PKGS+=(wlogout); fi
     if ! command_exists awww && ! package_installed awww; then AUR_PKGS+=(awww); fi
@@ -464,6 +522,7 @@ main() {
     copy_tree_contents_with_backup "${REPO_ROOT}/.config" "${HOME}/.config"
     copy_tree_contents_with_backup "${REPO_ROOT}/.icons" "${HOME}/.icons"
     copy_tree_contents_with_backup "${REPO_ROOT}/.local/share/applications" "${HOME}/.local/share/applications"
+    install_session_entry
 
     print_section "Post-Installation"
     print_info "Setting up user directories..."

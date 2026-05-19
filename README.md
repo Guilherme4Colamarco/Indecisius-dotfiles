@@ -182,7 +182,9 @@ For unattended installs after reviewing the dry-run:
 ./install.sh --apply --with-aur --yes
 ```
 
-Existing config paths are moved to timestamped `.bak` backups before new files are copied.
+Existing config paths are moved to timestamped `.bak` backups before new files are copied. If Snapper or Timeshift is detected, the installer also offers to create a system snapshot before copying configs or installing packages.
+
+The installer validates that the checkout contains the expected Mango/Waybar/Wofi config directories and installs the local `mango.desktop` session entry to `~/.local/share/wayland-sessions/` when present.
 
 ## Manual Installation
 
@@ -215,6 +217,10 @@ cp ~/.config/mango/mango.desktop ~/.local/share/wayland-sessions/
 | `mako` | Notifications |
 | `kitty` | Terminal |
 | `fish` + `starship` + `zoxide` | Shell |
+| `fastfetch` | Terminal system summary |
+| `pavucontrol` + `pamixer` + `playerctl` | Audio and media controls |
+| `nwg-look` | GTK theme, fonts, and cursor |
+| `qt5ct` + `qt6ct` | Appearance settings for Qt apps |
 | `awww` | Wallpaper daemon |
 | `waypaper` | Wallpaper GUI |
 | `cliphist` + `wl-clipboard` | Clipboard history and integration |
