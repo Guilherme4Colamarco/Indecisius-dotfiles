@@ -1,0 +1,131 @@
+# ---------------------------------------
+# Indecisius Starship prompt — cybr-inspired
+# Based on cybrcore/cybr-starship by scherrer-txt (GPL-3.0):
+# https://github.com/cybrcore/cybr-starship
+# Source adapted from cybrcore.toml.
+# ---------------------------------------
+
+scan_timeout = 100
+
+format = """
+$username\
+[](fg:no1 bg:re2)\
+$shell\
+[](fg:re2 bg:re0)\
+$directory\
+[](fg:re0)\
+$git_branch\
+$git_status\
+$python\
+$c\
+$golang\
+$rust\
+$docker_context\
+$time\
+$line_break$character
+"""
+
+palette = "cybr_ship"
+
+[username]
+show_always = true
+style_user = "bg:no1 fg:re0"
+format = '[ $user ]($style)'
+disabled = false
+
+[shell]
+style = "bg:re2 fg:re0"
+format = '[ $indicator ]($style)'
+disabled = false
+
+[directory]
+style = "fg:re2 bg:re0"
+format = "[ $path ](bold $style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[line_break]
+disabled = false
+
+[jobs]
+disabled = true
+
+[character]
+success_symbol = "[❯ ](fg:re0)"
+error_symbol = "[ ](fg:re0)"
+vicmd_symbol = "[󰆤 ](fg:ye0)"
+format = "$symbol"
+
+[time]
+disabled = false
+time_format = "%R"
+style = "fg:cy0 bg:cy2"
+format = '[](fg:cy2)[ $time ]($style)[](fg:cy2)'
+
+[custom.time_arrow]
+disabled = false
+command = 'echo -n ""'
+when = 'true'
+style = "fg:cy2"
+format = '[ $output]($style)'
+
+[custom.transient_time]
+disabled = false
+command = 'date "+%H:%M"'
+when = 'true'
+style = "fg:cy0 bg:cy2"
+format = '[ $output ]($style)'
+
+[git_branch]
+symbol = ""
+style = "bg:pu2 fg:pu0"
+format = "[](fg:pu2)[ $symbol $branch ]($style)[](fg:pu2)"
+
+[git_status]
+style = "bg:pu0 fg:pu2"
+format = "[](fg:pu0)[ $all_status$ahead_behind ]($style)[](fg:pu0)"
+
+[python]
+symbol = ""
+style = "bg:ye2 fg:ye0"
+format = "[](fg:re0 bg:ye2)[ $symbol ($version) ]($style)"
+
+[c]
+symbol = ""
+style = "bg:bl2 fg:bl0"
+format = "[](fg:re0 bg:bl2)[ $symbol ($version) ]($style)"
+
+[golang]
+symbol = ""
+style = "bg:bl2 fg:bl0"
+format = "[ $symbol ($version) ]($style)"
+
+[rust]
+symbol = ""
+style = "bg:or2 fg:or0"
+format = "[](fg:bl2 bg:or2)[ $symbol ($version) ]($style)"
+
+[docker_context]
+symbol = ""
+style = "bg:bl2 fg:bl0"
+format = "[](fg:or2 bg:bl2)[ $symbol $context ]($style)"
+
+[palettes.cybr_ship]
+no0 = "#030408"
+no1 = "#05070D"
+re0 = "#81d5cd"
+re2 = "#00504b"
+gr0 = "#9df2e9"
+gr2 = "#0C3423"
+ye0 = "#F2D230"
+ye2 = "#332D10"
+bl0 = "#3061F2"
+bl2 = "#0C1737"
+pu0 = "#A130F2"
+pu2 = "#230D37"
+cy0 = "#29BECC"
+cy2 = "#0B292F"
+wh0 = "#898D99"
+wh2 = "#1E2025"
+or0 = "#F23D18"
+or2 = "#330F0B"

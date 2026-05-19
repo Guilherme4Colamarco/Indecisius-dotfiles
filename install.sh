@@ -486,9 +486,11 @@ main() {
         mangowm wlr-randr
         waybar wofi cava mako matugen jq
         kitty fish starship zoxide fastfetch
+        bat eza yazi neovim
         cliphist wl-clipboard
         grim slurp swappy
         brightnessctl pavucontrol pamixer playerctl
+        networkmanager bluetui
         gnome-keyring polkit polkit-gnome
         xdg-desktop-portal xdg-desktop-portal-wlr xdg-user-dirs
         nwg-look qt5ct qt6ct gtk3 gtk4

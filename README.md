@@ -217,7 +217,9 @@ cp ~/.config/mango/mango.desktop ~/.local/share/wayland-sessions/
 | `mako` | Notifications |
 | `kitty` | Terminal |
 | `fish` + `starship` + `zoxide` | Shell |
+| `bat` + `eza` + `yazi` + `neovim` | Fish aliases and terminal workflow |
 | `fastfetch` | Terminal system summary |
+| `networkmanager` + `bluetui` | Fish Wi-Fi/Bluetooth helper aliases |
 | `pavucontrol` + `pamixer` + `playerctl` | Audio and media controls |
 | `nwg-look` | GTK theme, fonts, and cursor |
 | `qt5ct` + `qt6ct` | Appearance settings for Qt apps |
