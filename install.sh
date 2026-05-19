@@ -83,6 +83,10 @@ run_privileged() { run sudo "$@"; }
 
 timestamp() { date +%Y%m%d-%H%M%S; }
 
+detect_root_filesystem() {
+    findmnt -no FSTYPE / 2>/dev/null || echo "unknown"
+}
+
 usage() {
     cat <<'EOF'
 Usage: ./install.sh [--apply] [--with-aur] [--yes]
@@ -216,6 +220,88 @@ detect_system() {
     fi
 }
 
+detect_timeshift_mode() {
+    local config="/etc/timeshift/timeshift.json"
+
+    if [ -r "$config" ]; then
+        if grep -Eq '"btrfs_mode"[[:space:]]*:[[:space:]]*"?true"?' "$config"; then
+            echo "btrfs"
+            return 0
+        fi
+        if grep -Eq '"btrfs_mode"[[:space:]]*:[[:space:]]*"?false"?' "$config"; then
+            echo "rsync"
+            return 0
+        fi
+    fi
+
+    echo "unknown"
+}
+
+detect_snapshot_tools() {
+    local root_fs
+    root_fs="$(detect_root_filesystem)"
+
+    print_section "Snapshot Detection"
+    print_info "Root filesystem: $root_fs"
+
+    SNAPSHOT_TOOLS=()
+
+    if command_exists snapper; then
+        local snapper_mode="unknown"
+        if [ "$root_fs" = "btrfs" ]; then
+            snapper_mode="btrfs"
+        fi
+        SNAPSHOT_TOOLS+=(snapper)
+        print_success "Snapper detected ($snapper_mode)"
+    else
+        print_info "Snapper not detected"
+    fi
+
+    if command_exists timeshift; then
+        local timeshift_mode
+        timeshift_mode="$(detect_timeshift_mode)"
+        SNAPSHOT_TOOLS+=(timeshift)
+        print_success "Timeshift detected ($timeshift_mode)"
+    else
+        print_info "Timeshift not detected"
+    fi
+
+    if [ ${#SNAPSHOT_TOOLS[@]} -eq 0 ]; then
+        print_warning "No supported snapshot tool detected. Continuing with per-file .bak backups only."
+    fi
+}
+
+create_preinstall_snapshot() {
+    local description="Indecisius dotfiles pre-install $(timestamp)"
+
+    detect_snapshot_tools
+
+    if [ ${#SNAPSHOT_TOOLS[@]} -eq 0 ]; then
+        return 0
+    fi
+
+    if ! ask_confirmation "Create a system snapshot before installing configs?" "y"; then
+        print_warning "Snapshot skipped by user."
+        return 0
+    fi
+
+    case "${SNAPSHOT_TOOLS[0]}" in
+        snapper)
+            print_info "Creating Snapper snapshot..."
+            run_privileged snapper create --description "$description" --cleanup-algorithm number
+            print_success "Snapper snapshot requested"
+            ;;
+        timeshift)
+            print_info "Creating Timeshift snapshot..."
+            run_privileged timeshift --create --comments "$description" --tags D
+            print_success "Timeshift snapshot requested"
+            ;;
+        *)
+            print_warning "Unsupported snapshot tool: ${SNAPSHOT_TOOLS[0]}"
+            ;;
+    esac
+}
+
 # ============================================
 # AUR Setup
 # ============================================
@@ -333,6 +419,8 @@ main() {
         echo -e "${YELLOW}Cancelled.${NC}"
         exit 0
     fi
+
+    create_preinstall_snapshot
 
     print_section "System Update"
     print_info "Skipping full system upgrade. Run 'sudo pacman -Syu' yourself when desired."
