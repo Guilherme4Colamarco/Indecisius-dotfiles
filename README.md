@@ -162,7 +162,9 @@ cd Indecisius-dotfiles
 ./install.sh
 ```
 
-The command above is a dry-run. To actually apply changes:
+The command above is a dry-run: it prints packages, backups, and copy operations without touching the system.
+
+To actually apply changes:
 
 ```bash
 ./install.sh --apply
@@ -173,6 +175,14 @@ To allow AUR package installation/bootstrap:
 ```bash
 ./install.sh --apply --with-aur
 ```
+
+For unattended installs after reviewing the dry-run:
+
+```bash
+./install.sh --apply --with-aur --yes
+```
+
+Existing config paths are moved to timestamped `.bak` backups before new files are copied.
 
 ## Manual Installation
 
