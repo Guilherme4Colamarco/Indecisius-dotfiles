@@ -18,8 +18,7 @@ The current workflow avoids old launchers/panels and centralizes the visual setu
 |---|---|
 | **WM** | [MangoWM](https://github.com/CachyOS/mangowm) |
 | **Bar** | [Waybar](https://github.com/Alexays/Waybar) with the MangoWC theme + powerline SVGs |
-| **Launcher** | [Wofi](https://hg.sr.ht/~scoopta/wofi) in `drun` spotlight mode |
-| **Switcher/helper menus** | [Wofi](https://hg.sr.ht/~scoopta/wofi) in `dmenu` mode |
+|| **Launcher** | [Wofi](https://hg.sr.ht/~scoopta/wofi) — spotlight + helper menus |
 | **Dynamic colors** | [matugen](https://github.com/InioX/matugen) |
 | **Audio visualizer** | [Cava](https://github.com/karlstav/cava) with matugen colors |
 | **GTK/cursor/font appearance** | [nwg-look](https://github.com/nwg-piotr/nwg-look), GTK 2/3/4, Qt5/Qt6, and XCursor |
@@ -154,15 +153,38 @@ When `nwg-look` closes, the wrapper syncs:
 
 ## Screenshots
 
-| Screenshot | Description |
-|---|---|
-| ![Desktop](screenshots/desktop.png) | Desktop (default tiling, default tagging) |
-| ![Apps Launcher](screenshots/apps launcher (wofi).png) | Wofi `drun` spotlight launcher |
-| ![Cava & Bar](screenshots/cava & bar matugen.png) | Waybar + Cava visualizer with matugen colors |
-| ![Center Tile](screenshots/center tile.png) | Center-tile layout |
-| ![Grid](screenshots/grid.png) | Grid layout |
-| ![Scroller](screenshots/scroller.png) | Scroller layout |
-| ![Tile Master](screenshots/tile (master) layout.png) | Tile master layout |
+Some highlights of the current setup — click each image to see the full-size capture.
+
+### Desktop & Layouts
+
+**Desktop — default tiling, default tagging**
+![Desktop](screenshots/desktop.png)
+
+**Center-tile layout**
+![Center Tile](screenshots/center tile.png)
+
+**Grid layout**
+![Grid](screenshots/grid.png)
+
+**Tile master layout**
+![Tile Master](screenshots/tile (master) layout.png)
+
+**Scroller layout**
+![Scroller](screenshots/scroller.png)
+
+### Apps & Bar
+
+**Wofi spotlight launcher** — fuzzy search runs apps with `SUPER + D`
+![Apps Launcher](screenshots/apps launcher (wofi).png)
+
+**Wofi layout menu** — cycle or pick a tiling layout with `SUPER + N`
+![Layout Menu](screenshots/layout-menu.png)
+
+**Waybar + Cava** — top bar with powerline SVGs, workspace switcher, and a terminal audio visualizer driven entirely by matugen wallpaper colors
+![Cava & Bar](screenshots/cava & bar matugen.png)
+
+---
+*Screenshots captured with `grim` + `slurp`. See [Installation](#installation) for the full setup.*
 
 ## Installation
 
@@ -220,9 +242,8 @@ cp ~/.config/mango/mango.desktop ~/.local/share/wayland-sessions/
 |---|---|
 | `mangowm` | Window manager |
 | `waybar` | Top bar |
-| `wofi` | Main launcher |
-| `wofi` | Launcher and helper menus |
-| `matugen` + `jq` | Wallpaper-based dynamic colors |
+|| `wofi` | Launcher and helper menus |
+|| `matugen` + `jq` | Wallpaper-based dynamic colors |
 | `cava` | Terminal audio visualizer |
 | `nwg-look` | GTK theme, fonts, and cursor |
 | `qt5ct` + `qt6ct` | Appearance settings for Qt apps |
@@ -233,10 +254,6 @@ cp ~/.config/mango/mango.desktop ~/.local/share/wayland-sessions/
 | `fastfetch` | Terminal system summary |
 | `networkmanager` + `bluetui` | Fish Wi-Fi/Bluetooth helper aliases |
 | `pavucontrol` + `pamixer` + `playerctl` | Audio and media controls |
-| `nwg-look` | GTK theme, fonts, and cursor |
-| `qt5ct` + `qt6ct` | Appearance settings for Qt apps |
-| `awww` | Wallpaper daemon |
-| `waypaper` | Wallpaper GUI |
 | `cliphist` + `wl-clipboard` | Clipboard history and integration |
 | `grim` + `slurp` + `swappy` | Screenshots |
 | `wlogout` | Power menu |
