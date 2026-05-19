@@ -152,6 +152,18 @@ When `nwg-look` closes, the wrapper syncs:
 - GSettings: `org.gnome.desktop.interface`
 - Qt: fonts and icons in `qt5ct` and `qt6ct`
 
+## Screenshots
+
+| Screenshot | Description |
+|---|---|
+| ![Desktop](screenshots/desktop.png) | Desktop (default tiling, default tagging) |
+| ![Apps Launcher](screenshots/apps launcher (wofi).png) | Wofi `drun` spotlight launcher |
+| ![Cava & Bar](screenshots/cava & bar matugen.png) | Waybar + Cava visualizer with matugen colors |
+| ![Center Tile](screenshots/center tile.png) | Center-tile layout |
+| ![Grid](screenshots/grid.png) | Grid layout |
+| ![Scroller](screenshots/scroller.png) | Scroller layout |
+| ![Tile Master](screenshots/tile (master) layout.png) | Tile master layout |
+
 ## Installation
 
 The installer is made for CachyOS/Arch Linux and runs in safe mode by default.

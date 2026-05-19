@@ -1,0 +1,72 @@
+# Local planning/session notes
+task_plan.md
+progress.md
+findings.md
+
+# Generated graph/research outputs
+graphify-out/
+
+# Runtime-generated theme files
+.config/mango/hyprmango/colors-matugen.conf
+.config/mango/hyprmango/colors.matugen.conf
+.config/wofi/matugen.css
+
+# Backups created while experimenting with configs
+backups/
+.config/**/backups/
+*.bak
+*.backup
+*.orig
+*.old
+
+# Logs, temporary files and editor swap files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.cache/
+
+# Local env/secrets; keep examples trackable
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*secret*
+*token*
+credentials*
+
+# Private account/auth state that should never be public
+.ssh/
+.gnupg/
+.aws/
+.kube/
+.kimi/oauth/
+.kimi/logs/
+.kimi/state/
+.kimi/**/*.db
+.kimi/**/*.sqlite
+.kimi/**/*.lock
+.kimi/**/*.token
+.kimi/**/*secret*
+.kimi/**/credentials*
+
+# Dependency/build caches if tools are tested inside the dotfiles repo
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+target/
+dist/
+build/
+
+# Local screenshots/captures used for visual debugging
+captures/
+*.screenshot.*
+*-screenshot.*
