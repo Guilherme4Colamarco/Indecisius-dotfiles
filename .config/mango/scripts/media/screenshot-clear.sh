@@ -34,4 +34,4 @@ if [ -f "$CLEAR_DST" ]; then
     mmsg -d reload_config
 fi
 
-~/.config/mango/scripts/screenshot-sound.sh
+~/.config/mango/scripts/media/screenshot-sound.sh

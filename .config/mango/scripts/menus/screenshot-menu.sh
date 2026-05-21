@@ -20,10 +20,10 @@ if [ "${1:-}" = "--file" ]; then
 	mkdir -p "${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots"
 	FILENAME="Screenshot_${OUTPUT_NAME}_$(date '+%Y-%m-%d_%H-%M-%S').png"
 	grim -o "$OUTPUT_NAME" "${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots/$FILENAME"
-	"$HOME/.config/mango/scripts/screenshot-sound.sh"
+	"$HOME/.config/mango/scripts/media/screenshot-sound.sh"
 	notify-send -i screenshot "Screenshot saved" "$FILENAME"
 else
 	grim -o "$OUTPUT_NAME" - | wl-copy --type image/png
-	"$HOME/.config/mango/scripts/screenshot-sound.sh"
+	"$HOME/.config/mango/scripts/media/screenshot-sound.sh"
 	notify-send -i screenshot "Screenshot taken" "$OUTPUT_NAME copied to clipboard"
 fi

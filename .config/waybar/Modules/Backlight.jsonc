@@ -10,7 +10,7 @@
         "format-icons": ["󰃞", "󰃟", "󰃠"],
         "on-click": "brightnessctl set 10%-",
         "on-click-right": "brightnessctl set 10%+",
-        "on-click-middle": "~/.config/mango/scripts/wallpaper-random.sh"
+        "on-click-middle": "~/.config/mango/scripts/media/wallpaper-random.sh"
        }
 
 }

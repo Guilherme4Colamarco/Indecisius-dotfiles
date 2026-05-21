@@ -113,7 +113,10 @@ The workflow avoids old-school launchers and panels, centralizing the visual sta
 │   │   ├── config.conf              # main entrypoint — sources all modules
 │   │   ├── configs/                 # core: env, execs, layout, colors, keybinds…
 │   │   ├── custom/                  # personal overrides (loaded last)
-│   │   ├── scripts/                 # reload, wallpaper, matugen, nwg-look, menus
+│   │   ├── scripts/                 # environment & visual control scripts
+│   │   │   ├── menus/               # interactive wofi selection menus
+│   │   │   ├── wm/                  # window manager utilities & lifecycle
+│   │   │   └── media/               # screen captures, audio, brightness, wallpaper
 │   │   ├── monitors.conf            # active monitor layout
 │   │   └── mango.desktop            # session entry for display managers
 │   ├── waybar/
@@ -228,7 +231,7 @@ The wrapper `nwg-look-sync.sh` opens nwg-look and, on close, propagates settings
 Launch it with `SUPER + Shift + A` or directly:
 
 ```bash
-~/.config/mango/scripts/nwg-look-sync.sh --open
+~/.config/mango/scripts/wm/nwg-look-sync.sh --open
 ```
 
 ---

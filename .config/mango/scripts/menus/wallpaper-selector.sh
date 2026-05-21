@@ -30,7 +30,7 @@ target="${WALLPAPER_DIR}/${selected}"
 for img in "${images[@]}"; do
     if [ "$img" = "$target" ]; then
         AWWW_TRANSITION=random awww img "$img"
-        "$HOME/.config/mango/scripts/update-matugen-accent.sh" "$img" >/dev/null 2>&1 || true
+        "$HOME/.config/mango/scripts/wm/update-matugen-accent.sh" "$img" >/dev/null 2>&1 || true
         exit 0
     fi
 done

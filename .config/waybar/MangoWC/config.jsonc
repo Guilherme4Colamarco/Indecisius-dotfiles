@@ -52,14 +52,14 @@
   },
 
   "custom/brightness": {
-    "exec": "~/.config/mango/scripts/brightness-ddc.sh",
+    "exec": "~/.config/mango/scripts/media/brightness-ddc.sh",
     "return-type": "json",
     "exec-on-event": false,
     "interval": 30,
-    "on-scroll-up": "~/.config/mango/scripts/brightness-ddc.sh up",
-    "on-scroll-down": "~/.config/mango/scripts/brightness-ddc.sh down",
-    "on-click": "~/.config/mango/scripts/brightness-ddc.sh up",
-    "on-click-right": "~/.config/mango/scripts/brightness-ddc.sh down",
+    "on-scroll-up": "~/.config/mango/scripts/media/brightness-ddc.sh up",
+    "on-scroll-down": "~/.config/mango/scripts/media/brightness-ddc.sh down",
+    "on-click": "~/.config/mango/scripts/media/brightness-ddc.sh up",
+    "on-click-right": "~/.config/mango/scripts/media/brightness-ddc.sh down",
     "tooltip": true
   },
 
