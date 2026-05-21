@@ -1,0 +1,10 @@
+{
+  "custom/mako": {
+    "exec": "~/.config/mango/scripts/media/mako-dnd.sh",
+    "return-type": "json",
+    "on-click": "~/.config/mango/scripts/media/mako-dnd.sh toggle",
+    "interval": 10,
+    "signal": 6,
+    "tooltip": true
+  }
+}

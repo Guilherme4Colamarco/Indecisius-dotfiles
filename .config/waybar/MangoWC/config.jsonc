@@ -31,6 +31,7 @@
     "custom/brightness",
     "network",
     "pulseaudio",
+    "custom/mako",
     "tray",
     "custom/arrow-right-re0",
     "custom/power"

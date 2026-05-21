@@ -86,6 +86,7 @@ window#waybar.hidden {
 #temperature,
 #network,
 #pulseaudio,
+#custom-mako,
 #battery,
 #backlight,
 #custom-brightness,
@@ -102,6 +103,7 @@ window#waybar.hidden {
 /* === BUTTON SIZE === */
 
 #tray,
+#custom-mako,
 #custom-brightness,
 #pulseaudio,
 #network,
@@ -327,6 +329,27 @@ window#waybar.hidden {
 
 #custom-brightness:hover {
 	color: @gr0;
+	background-color: @re2;
+}
+
+/* === MAKO (DO NOT DISTURB) === */
+
+#custom-mako {
+	color: @re0;
+	background-color: @no1;
+}
+
+#custom-mako.dnd {
+	color: @re1;
+}
+
+#custom-mako:hover {
+	color: @gr0;
+	background-color: @re2;
+}
+
+#custom-mako.dnd:hover {
+	color: @re1;
 	background-color: @re2;
 }
 
