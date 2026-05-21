@@ -1,104 +1,192 @@
-# Indecisius Dotfiles
+<div align="center">
 
-> MangoWM-focused desktop rice for CachyOS, powered by Waybar, Wofi, Cava, matugen, and nwg-look-managed appearance settings.
+# 🪐 Indecisius Dotfiles
 
-## About
+**MangoWM-focused desktop rice for CachyOS**
 
-This repository stores my current Wayland desktop configuration for **CachyOS**, focused on **MangoWM** as the main compositor. The goal is to keep the setup modular, easy to restore, and simple to tweak day to day.
+*Powered by Waybar · Wofi · Cava · matugen · nwg-look*
 
-The current workflow avoids old launchers/panels and centralizes the visual setup around three tools:
+![CachyOS](https://img.shields.io/badge/CachyOS-Arch_Linux-1793d1?style=flat-square&logo=archlinux&logoColor=white)
+![MangoWM](https://img.shields.io/badge/WM-MangoWM-e8a87c?style=flat-square)
+![Wayland](https://img.shields.io/badge/Protocol-Wayland-ffbc42?style=flat-square&logo=wayland&logoColor=white)
+![Shell](https://img.shields.io/badge/Shell-Fish_+_Starship-4e9a06?style=flat-square)
+![License](https://img.shields.io/badge/License-Personal-lightgrey?style=flat-square)
 
-- `matugen` for wallpaper-derived colors
-- `nwg-look` for GTK theme, font, and cursor control
-- `wofi` as the main spotlight-style launcher
+<br>
 
-## Stack
+![Desktop Preview](screenshots/desktop.png)
+
+</div>
+
+---
+
+## 📑 Table of Contents
+
+- [About](#-about)
+- [Stack](#-stack)
+- [Screenshots](#-screenshots)
+- [Structure](#-structure)
+- [Keybinds](#-keybinds)
+- [Launcher](#-launcher)
+- [Appearance](#-appearance)
+- [Installation](#-installation)
+- [Dependencies](#-dependencies)
+- [Notes](#-notes)
+- [Credits & Inspirations](#-credits--inspirations)
+
+---
+
+## 💡 About
+
+This repository stores my Wayland desktop configuration for **CachyOS**, built around **MangoWM** as the primary compositor. The setup is designed to be:
+
+- **Modular** — configs are split into small, purpose-specific files
+- **Reproducible** — a safe installer handles backups, dependencies, and session setup
+- **Color-aware** — wallpaper colors cascade to the bar, launcher, visualizer, and shell
+
+The workflow avoids old-school launchers and panels, centralizing the visual stack around three core tools:
+
+| Tool | Role |
+|---|---|
+| **matugen** | Extracts colors from the wallpaper and writes them to every themed config |
+| **nwg-look** | Single-pane control for GTK theme, fonts, and cursors across toolkits |
+| **Wofi** | Spotlight-style launcher with fuzzy search and helper menus |
+
+---
+
+## 🧰 Stack
 
 | Component | Tool |
 |---|---|
 | **WM** | [MangoWM](https://github.com/CachyOS/mangowm) |
-| **Bar** | [Waybar](https://github.com/Alexays/Waybar) with the MangoWC theme + powerline SVGs |
-|| **Launcher** | [Wofi](https://hg.sr.ht/~scoopta/wofi) — spotlight + helper menus |
+| **Bar** | [Waybar](https://github.com/Alexays/Waybar) — MangoWC theme + powerline SVGs |
+| **Launcher** | [Wofi](https://hg.sr.ht/~scoopta/wofi) — spotlight + helper menus |
 | **Dynamic colors** | [matugen](https://github.com/InioX/matugen) |
-| **Audio visualizer** | [Cava](https://github.com/karlstav/cava) with matugen colors |
-| **GTK/cursor/font appearance** | [nwg-look](https://github.com/nwg-piotr/nwg-look), GTK 2/3/4, Qt5/Qt6, and XCursor |
+| **Audio visualizer** | [Cava](https://github.com/karlstav/cava) — matugen-driven colors |
+| **GTK / cursor / fonts** | [nwg-look](https://github.com/nwg-piotr/nwg-look) — GTK 2/3/4, Qt5/6, XCursor |
 | **Notifications** | [Mako](https://github.com/emersion/mako) |
 | **Terminal** | [Kitty](https://sw.kovidgoyal.net/kitty/) |
-| **Shell** | [Fish](https://fishshell.com/) + Starship |
+| **Shell** | [Fish](https://fishshell.com/) + [Starship](https://starship.rs/) |
 | **Clipboard** | [cliphist](https://github.com/sentriz/cliphist) + Wofi |
 | **Wallpaper** | [awww](https://codeberg.org/LGFae/awww) + [waypaper](https://github.com/anufrievroman/waypaper) |
 | **Screenshots** | [grim](https://sr.ht/~emersion/grim/) + [slurp](https://github.com/emersion/slurp) + [swappy](https://github.com/jtheoof/swappy) |
 | **Power menu** | [wlogout](https://github.com/ArtsyMacaw/wlogout) |
 
-## Structure
+---
+
+## 📸 Screenshots
+
+> Click each image to see the full-size capture.
+
+### Desktop & Layouts
+
+| | |
+|:---:|:---:|
+| **Default tiling** | **Center-tile layout** |
+| ![Desktop](screenshots/desktop.png) | ![Center Tile](screenshots/center%20tile.png) |
+| **Grid layout** | **Tile master layout** |
+| ![Grid](screenshots/grid.png) | ![Tile Master](screenshots/tile%20(master)%20layout.png) |
+
+**Scroller layout**
+
+![Scroller](screenshots/scroller.png)
+
+### Apps & Bar
+
+| | |
+|:---:|:---:|
+| **Wofi spotlight** — `SUPER + D` | **Layout menu** — `SUPER + N` |
+| ![Wofi](screenshots/apps%20launcher%20(wofi).png) | ![Layout Menu](screenshots/layout-menu.png) |
+
+**Waybar + Cava** — top bar with powerline SVGs, workspace switcher, and terminal audio visualizer driven by matugen wallpaper colors
+
+![Cava & Bar](screenshots/cava%20%26%20bar%20matugen.png)
+
+---
+
+## 📂 Structure
 
 ```text
 .
 ├── .config/
 │   ├── mango/
-│   │   ├── config.conf              # main entrypoint, only orchestrates sources
-│   │   ├── hyprmango/               # core modules: env, execs, layout, colors, keybinds
-│   │   ├── custom/                  # personal overrides loaded last
-│   │   └── scripts/                 # reload, wallpaper, matugen, nwg-look, menus
+│   │   ├── config.conf              # main entrypoint — sources all modules
+│   │   ├── hyprmango/               # core: env, execs, layout, colors, keybinds…
+│   │   ├── custom/                  # personal overrides (loaded last)
+│   │   ├── scripts/                 # reload, wallpaper, matugen, nwg-look, menus
+│   │   ├── monitors.conf            # active monitor layout
+│   │   └── mango.desktop            # session entry for display managers
 │   ├── waybar/
-│   │   ├── MangoWC/                 # config, CSS, matugen.css, and powerline SVGs
+│   │   ├── MangoWC/                 # config, CSS, matugen.css, powerline SVGs
 │   │   └── Modules/                 # split Waybar modules
 │   ├── wofi/                        # spotlight, layout menu, and Wofi styles
 │   ├── cava/                        # audio visualizer with matugen-generated colors
-│   ├── gtk-3.0/                     # settings exported by nwg-look
-│   ├── gtk-4.0/                     # settings synced by the nwg-look wrapper
-│   ├── qt5ct/                       # font/icons mirrored from nwg-look
-│   ├── qt6ct/                       # font/icons mirrored from nwg-look
-│   ├── kitty/                       # terminal
-│   ├── fish/                        # shell and prompt
-│   ├── mako/                        # notifications
+│   ├── gtk-3.0/                     # GTK 3 settings (via nwg-look)
+│   ├── gtk-4.0/                     # GTK 4 settings (synced by wrapper)
+│   ├── qt5ct/ & qt6ct/              # Qt font/icon settings (mirrored from GTK)
+│   ├── kitty/                       # terminal config
+│   ├── fish/                        # shell config
+│   ├── starship.toml                # Starship prompt
+│   ├── mako/                        # notification daemon
+│   ├── matugen/                     # matugen templates
 │   ├── wlogout/                     # power menu
-│   └── waypaper/                    # wallpaper GUI
-├── .icons/default/index.theme       # default XCursor theme
-├── .local/share/applications/       # local desktop entries, including synced nwg-look launcher
-└── install.sh                       # installer; dry-run by default
+│   └── waypaper/                    # wallpaper GUI config
+├── .icons/default/index.theme       # default XCursor theme pointer
+├── .local/share/applications/       # local .desktop entries
+├── screenshots/                     # gallery captures
+└── install.sh                       # installer (dry-run by default)
 ```
 
-## Main Keybinds
+---
+
+## ⌨️ Keybinds
+
+### Core
 
 | Shortcut | Action |
 |---|---|
-| `SUPER + D` | Open Wofi spotlight (`drun`) |
-| `SUPER + Space` | Open Wofi spotlight (`drun`) |
-| `SUPER + grave` | Mango overview |
-| `SUPER + Shift + D` | Wofi run menu |
-| `SUPER + Return` | Kitty |
+| `SUPER + Return` | Open Kitty terminal |
 | `SUPER + Q` | Close focused window |
-| `SUPER + V` | Clipboard history |
-| `SUPER + Shift + .` | Emoji picker |
-| `SUPER + Shift + A` | Open `nwg-look` and sync GTK/cursor/fonts on close |
-| `SUPER + R` | Reload Mango and Waybar |
-| `SUPER + B` | Toggle/reload Waybar |
-| `SUPER + Tab` | Mango overview |
-| `SUPER + O` | Mango overview |
+| `SUPER + D` / `SUPER + Space` | Wofi spotlight (`drun`) |
+| `SUPER + Shift + D` | Wofi run menu |
+| `SUPER + R` | Reload MangoWM + Waybar |
+| `SUPER + B` | Toggle / reload Waybar |
+
+### Navigation & Workspaces
+
+| Shortcut | Action |
+|---|---|
+| `SUPER + grave` / `Tab` / `O` | MangoWM overview |
 | `SUPER + N` | Layout menu |
 | `SUPER + comma` | Toggle scroller centering |
+| `SUPER + 1..9` | Switch to workspace |
+| `SUPER + Shift + 1..9` | Move window to workspace |
+
+Scrolling over the Waybar workspace area also switches workspaces (up = previous, down = next).
+
+### Utilities
+
+| Shortcut | Action |
+|---|---|
+| `SUPER + V` | Clipboard history |
+| `SUPER + Shift + .` | Emoji picker |
 | `SUPER + W` | Random wallpaper + matugen update |
 | `SUPER + Shift + W` | Open Waypaper |
-| `SUPER + Shift + S` | Area screenshot to clipboard |
-| `SUPER + Shift + R` | Area screenshot to file |
-| `SUPER + 1..9` | Switch to tag/workspace |
-| `SUPER + Shift + 1..9` | Move window to tag/workspace |
+| `SUPER + Shift + A` | Open nwg-look → auto-sync on close |
+| `SUPER + Shift + S` | Area screenshot → clipboard |
+| `SUPER + Shift + R` | Area screenshot → file |
 
-On Waybar, scrolling over the workspace area also switches tag/workspace:
+---
 
-- Scroll up: previous workspace
-- Scroll down: next workspace
+## 🚀 Launcher
 
-## Launcher
-
-The main launcher is Wofi in `drun` mode:
+The main launcher is **Wofi** in `drun` mode:
 
 ```bash
 wofi --show drun --conf ~/.config/wofi/spotlight.conf --no-actions
 ```
 
-`~/.config/wofi/spotlight.conf` uses:
+Key settings in `spotlight.conf`:
 
 ```ini
 matching=fuzzy
@@ -106,169 +194,149 @@ insensitive=true
 drun-ignore_metadata=true
 ```
 
-This makes search fuzzy and case-insensitive, while avoiding apps being prioritized only because their description mentions the search term. Example: searching for `files` should prioritize Nautilus/Files, not editors that merely say “edit text files”.
+This makes search fuzzy and case-insensitive, while preventing apps from being prioritized by description keywords. Searching for `files` will rank Nautilus/Files above editors that merely mention "edit text files".
 
-The old launchpad was removed.
+---
 
-## Appearance
+## 🎨 Appearance
 
-### Matugen
+### matugen — Dynamic Wallpaper Colors
 
-`~/.config/mango/scripts/update-matugen-accent.sh` extracts colors from the current wallpaper and updates:
+The script `update-matugen-accent.sh` extracts a palette from the current wallpaper and writes it to:
 
-- `~/.config/mango/hyprmango/colors.matugen.conf`
-- `~/.config/waybar/MangoWC/matugen.css`
-- Waybar powerline SVGs in `~/.config/waybar/MangoWC/svg/`
-- `~/.config/wofi/matugen.css`
-- `~/.config/cava/config`
-- Fish/Starship colors when applicable
+| Target | File |
+|---|---|
+| MangoWM accents | `hyprmango/colors.matugen.conf` |
+| Waybar CSS | `waybar/MangoWC/matugen.css` |
+| Waybar powerline SVGs | `waybar/MangoWC/svg/` |
+| Wofi CSS | `wofi/matugen.css` |
+| Cava config | `cava/config` |
+| Fish / Starship | Colors when applicable |
 
-Wallpaper scripts call this update automatically.
+Wallpaper scripts call this update automatically — change the wallpaper with `SUPER + W` and the entire desktop theme updates in seconds.
 
-### nwg-look
+### nwg-look — GTK / Cursor / Font Sync
 
-The wrapper `~/.config/mango/scripts/nwg-look-sync.sh` makes GTK theme, cursor, and fonts easier to control through `nwg-look`.
+The wrapper `nwg-look-sync.sh` opens nwg-look and, on close, propagates settings to:
 
-Recommended flow:
+- **GTK 3 / GTK 4 / GTK 2** — `settings.ini` and `gtkrc-2.0`
+- **XCursor** — `~/.icons/default/index.theme`
+- **MangoWM** — cursor size, theme, env vars
+- **GSettings** — `org.gnome.desktop.interface`
+- **Qt 5 / Qt 6** — fonts and icons via `qt5ct` / `qt6ct`
+
+Launch it with `SUPER + Shift + A` or directly:
 
 ```bash
 ~/.config/mango/scripts/nwg-look-sync.sh --open
 ```
 
-Or use the keybind:
-
-```text
-SUPER + Shift + A
-```
-
-When `nwg-look` closes, the wrapper syncs:
-
-- GTK 3: `~/.config/gtk-3.0/settings.ini`
-- GTK 4: `~/.config/gtk-4.0/settings.ini`
-- GTK 2: `~/.config/gtkrc-2.0`
-- XCursor: `~/.icons/default/index.theme`
-- Mango: `~/.config/mango/custom/nwg-look-env.conf` and `nwg-look-mango.conf`
-- GSettings: `org.gnome.desktop.interface`
-- Qt: fonts and icons in `qt5ct` and `qt6ct`
-
-## Screenshots
-
-Some highlights of the current setup — click each image to see the full-size capture.
-
-### Desktop & Layouts
-
-**Desktop — default tiling, default tagging**
-![Desktop](screenshots/desktop.png)
-
-**Center-tile layout**
-![Center Tile](screenshots/center tile.png)
-
-**Grid layout**
-![Grid](screenshots/grid.png)
-
-**Tile master layout**
-![Tile Master](screenshots/tile (master) layout.png)
-
-**Scroller layout**
-![Scroller](screenshots/scroller.png)
-
-### Apps & Bar
-
-**Wofi spotlight launcher** — fuzzy search runs apps with `SUPER + D`
-![Apps Launcher](screenshots/apps launcher (wofi).png)
-
-**Wofi layout menu** — cycle or pick a tiling layout with `SUPER + N`
-![Layout Menu](screenshots/layout-menu.png)
-
-**Waybar + Cava** — top bar with powerline SVGs, workspace switcher, and a terminal audio visualizer driven entirely by matugen wallpaper colors
-![Cava & Bar](screenshots/cava & bar matugen.png)
-
 ---
-*Screenshots captured with `grim` + `slurp`. See [Installation](#installation) for the full setup.*
 
-## Installation
+## 📦 Installation
 
-The installer is made for CachyOS/Arch Linux and runs in safe mode by default.
+> **Target**: CachyOS / Arch Linux with MangoWM
+
+### Quick Start
 
 ```bash
-git clone <repo-url> Indecisius-dotfiles
+git clone https://github.com/Guilherme4Colamarco/Indecisius-dotfiles.git
 cd Indecisius-dotfiles
-./install.sh
+./install.sh              # dry-run — shows what would happen
 ```
 
-The command above is a dry-run: it prints packages, backups, and copy operations without touching the system.
-
-To actually apply changes:
+### Apply Changes
 
 ```bash
-./install.sh --apply
+./install.sh --apply                    # install configs only
+./install.sh --apply --with-aur         # also install AUR packages
+./install.sh --apply --with-aur --yes   # unattended (skip prompts)
 ```
 
-To allow AUR package installation/bootstrap:
+### What the Installer Does
 
-```bash
-./install.sh --apply --with-aur
-```
+1. **Validates** the checkout contains the expected config directories
+2. **Backs up** existing config paths to timestamped `.bak` directories
+3. **Offers a system snapshot** if Snapper or Timeshift is detected
+4. **Copies** configs to `~/.config/`, `~/.icons/`, and `~/.local/share/`
+5. **Installs** the `mango.desktop` session to `~/.local/share/wayland-sessions/`
+6. **Installs packages** via `pacman` (and optionally AUR helpers)
 
-For unattended installs after reviewing the dry-run:
-
-```bash
-./install.sh --apply --with-aur --yes
-```
-
-Existing config paths are moved to timestamped `.bak` backups before new files are copied. If Snapper or Timeshift is detected, the installer also offers to create a system snapshot before copying configs or installing packages.
-
-The installer validates that the checkout contains the expected Mango/Waybar/Wofi config directories and installs the local `mango.desktop` session entry to `~/.local/share/wayland-sessions/` when present.
-
-## Manual Installation
+### Manual Installation
 
 ```bash
 mkdir -p ~/.config ~/.icons ~/.local/share/applications
 cp -r .config/. ~/.config/
 cp -r .icons/. ~/.icons/
 cp -r .local/share/applications/. ~/.local/share/applications/
-```
 
-Then install the local Mango session if you want to ensure your display manager uses this config tree:
-
-```bash
+# optional: register the Mango session for your display manager
 mkdir -p ~/.local/share/wayland-sessions
 cp ~/.config/mango/mango.desktop ~/.local/share/wayland-sessions/
 ```
 
-## Dependencies
+---
+
+## 📋 Dependencies
+
+### Core
 
 | Package | Purpose |
 |---|---|
-| `mangowm` | Window manager |
+| `mangowm` | Window manager / compositor |
 | `waybar` | Top bar |
-|| `wofi` | Launcher and helper menus |
-|| `matugen` + `jq` | Wallpaper-based dynamic colors |
+| `wofi` | Launcher and helper menus |
+| `matugen` + `jq` | Wallpaper-based dynamic colors |
 | `cava` | Terminal audio visualizer |
-| `nwg-look` | GTK theme, fonts, and cursor |
-| `qt5ct` + `qt6ct` | Appearance settings for Qt apps |
-| `mako` | Notifications |
-| `kitty` | Terminal |
-| `fish` + `starship` + `zoxide` | Shell |
+| `nwg-look` | GTK theme, fonts, and cursor control |
+| `qt5ct` + `qt6ct` | Qt appearance settings |
+| `mako` | Notification daemon |
+
+### Terminal & Shell
+
+| Package | Purpose |
+|---|---|
+| `kitty` | Terminal emulator |
+| `fish` + `starship` + `zoxide` | Shell, prompt, and smart `cd` |
 | `bat` + `eza` + `yazi` + `neovim` | Fish aliases and terminal workflow |
-| `fastfetch` | Terminal system summary |
-| `networkmanager` + `bluetui` | Fish Wi-Fi/Bluetooth helper aliases |
-| `pavucontrol` + `pamixer` + `playerctl` | Audio and media controls |
-| `cliphist` + `wl-clipboard` | Clipboard history and integration |
+| `fastfetch` | System summary |
+
+### Utilities
+
+| Package | Purpose |
+|---|---|
+| `cliphist` + `wl-clipboard` | Clipboard history |
 | `grim` + `slurp` + `swappy` | Screenshots |
 | `wlogout` | Power menu |
 | `brightnessctl` | Screen brightness |
+| `pavucontrol` + `pamixer` + `playerctl` | Audio and media controls |
+| `networkmanager` + `bluetui` | Wi-Fi / Bluetooth helpers |
 | `gnome-keyring` + `polkit` | Secrets and authentication |
 | `xdg-desktop-portal` + `xdg-desktop-portal-wlr` | Wayland portals |
 
-## Notes
+---
 
-- `~/.config/mango/config.conf` loads core modules first, then overrides from `~/.config/mango/custom/`.
-- Files generated by matugen/nwg-look are versioned here as a reference for the current state, but they should be changed through the tools, not manually.
-- `~/.config/mango/backups/` is not part of the main workflow.
+## 📝 Notes
 
-## Credits
+- `config.conf` loads core modules first, then overrides from `custom/` — personal tweaks always win.
+- Files generated by matugen and nwg-look are versioned as a snapshot of the current state. Change them through the tools, not by hand.
+- Multiple monitor configs are included (`monitors.conf`, `monitors-duel-monitors.conf`, `monitors-1440p-triple-screens.conf`). Symlink or copy the one that fits your setup.
+- The `backups/` directory is created at runtime and is not part of the main workflow.
 
-- CachyOS community for the packages and MangoWM integration
-- MangoWM project for the compositor
-- Waybar, Wofi, Mako, matugen, and the other free tools used in this setup
+---
+
+## 🙏 Credits & Inspirations
+
+- **[CachyOS](https://cachyos.org/)** community for the packages and MangoWM integration
+- **[MangoWM](https://github.com/CachyOS/mangowm)** project for the compositor
+- **[cybrcore/cybr-waybar](https://github.com/cybrcore/cybr-waybar)** by scherrer-txt — inspiration for the Waybar visual structure, angular separators, and custom module patterns
+- **[cybrcore/cybr-fish](https://github.com/cybrcore/cybr-fish)** and **[cybrcore/cybr-starship](https://github.com/cybrcore/cybr-starship)** by scherrer-txt — inspiration / adaptation of the Fish color palette and Starship prompt
+- [Waybar](https://github.com/Alexays/Waybar), [Wofi](https://hg.sr.ht/~scoopta/wofi), [Mako](https://github.com/emersion/mako), [matugen](https://github.com/InioX/matugen), and all the other free/open-source tools that make this setup possible
+
+---
+
+<div align="center">
+
+*Made with 🧡 on CachyOS*
+
+</div>
