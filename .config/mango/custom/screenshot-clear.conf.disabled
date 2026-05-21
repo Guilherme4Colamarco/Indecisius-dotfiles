@@ -1,4 +1,0 @@
-# Temporary screenshot-clear override
-# Rename to screenshot-clear.conf to activate (disables blur/anims for clean screenshots)
-blur = 0
-blur_layer = 0
