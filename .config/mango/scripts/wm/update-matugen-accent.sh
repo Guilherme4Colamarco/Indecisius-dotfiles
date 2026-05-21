@@ -197,9 +197,25 @@ if [ -f "$HOME/.config/starship.toml" ]; then
         "$HOME/.config/starship.toml"
 fi
 
-pkill -SIGUSR2 waybar 2>/dev/null || true
+# Reload or restart Waybar dynamically to pick up CSS @import changes
+waybar_pid=$(pgrep -x waybar | head -n 1 || true)
+if [ -n "$waybar_pid" ] && [ -r "/proc/$waybar_pid/cmdline" ]; then
+    mapfile -d "" cmd_args < "/proc/$waybar_pid/cmdline"
+    pkill -x waybar 2>/dev/null || true
+    for i in {1..10}; do
+        pgrep -x waybar >/dev/null || break
+        sleep 0.1
+    done
+    "${cmd_args[@]}" >/dev/null 2>&1 &
+else
+    pkill -x waybar 2>/dev/null || true
+    sleep 0.5
+    waybar -c "$HOME/.config/waybar/MangoWC/config.jsonc" -s "$HOME/.config/waybar/MangoWC/style.css" >/dev/null 2>&1 &
+fi
 pkill -USR2 cava 2>/dev/null || true
 
-# Reload wofi (it reads CSS on launch) and notify
+# Reload wofi (it reads CSS on launch)
 pkill wofi 2>/dev/null || true
-notify-send "Matugen" "Cores atualizadas do wallpaper:\n$image" -i preferences-desktop-theme 2>/dev/null || true
+
+# Reload MangoWM to apply updated colors (e.g. borders, window indicators)
+mmsg -s -d reload_config >/dev/null 2>&1 || true

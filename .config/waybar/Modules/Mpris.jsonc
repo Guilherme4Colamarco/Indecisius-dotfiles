@@ -1,0 +1,12 @@
+{
+  "custom/mpris": {
+    "exec": "playerctl metadata --format '{\"text\": \"{{title}} - {{artist}}\", \"alt\": \"{{status}}\", \"tooltip\": \"{{title}} by {{artist}}\", \"class\": \"{{status}}\"}' 2>/dev/null",
+    "interval": 2,
+    "return-type": "json",
+    "max-length": 25,
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl next",
+    "on-click-middle": "playerctl previous",
+    "tooltip": true
+  }
+}

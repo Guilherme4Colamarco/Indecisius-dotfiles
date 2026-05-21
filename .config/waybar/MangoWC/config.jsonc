@@ -54,7 +54,7 @@
   "custom/brightness": {
     "exec": "~/.config/mango/scripts/media/brightness-ddc.sh",
     "return-type": "json",
-    "exec-on-event": false,
+    "exec-on-event": true,
     "interval": 30,
     "on-scroll-up": "~/.config/mango/scripts/media/brightness-ddc.sh up",
     "on-scroll-down": "~/.config/mango/scripts/media/brightness-ddc.sh down",
