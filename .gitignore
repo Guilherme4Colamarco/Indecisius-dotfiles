@@ -7,8 +7,8 @@ findings.md
 graphify-out/
 
 # Runtime-generated theme files
-.config/mango/hyprmango/colors-matugen.conf
-.config/mango/hyprmango/colors.matugen.conf
+.config/mango/configs/colors-matugen.conf
+.config/mango/configs/colors.matugen.conf
 .config/wofi/matugen.css
 
 # Backups created while experimenting with configs

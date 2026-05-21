@@ -1,10 +1,10 @@
 #!/bin/bash
 # Toggle Mango scroller center mode on/off.
-# Source of truth: ~/.config/mango/hyprmango/layout.conf
+# Source of truth: ~/.config/mango/configs/layout.conf
 
 set -euo pipefail
 
-CONF="$HOME/.config/mango/hyprmango/layout.conf"
+CONF="$HOME/.config/mango/configs/layout.conf"
 
 get_value() {
     grep -E "^$1[[:space:]]*=" "$CONF" | tail -n 1 | cut -d= -f2 | tr -d '[:space:]'

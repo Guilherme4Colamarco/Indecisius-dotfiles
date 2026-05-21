@@ -111,7 +111,7 @@ The workflow avoids old-school launchers and panels, centralizing the visual sta
 ├── .config/
 │   ├── mango/
 │   │   ├── config.conf              # main entrypoint — sources all modules
-│   │   ├── hyprmango/               # core: env, execs, layout, colors, keybinds…
+│   │   ├── configs/                 # core: env, execs, layout, colors, keybinds…
 │   │   ├── custom/                  # personal overrides (loaded last)
 │   │   ├── scripts/                 # reload, wallpaper, matugen, nwg-look, menus
 │   │   ├── monitors.conf            # active monitor layout
@@ -206,7 +206,7 @@ The script `update-matugen-accent.sh` extracts a palette from the current wallpa
 
 | Target | File |
 |---|---|
-| MangoWM accents | `hyprmango/colors.matugen.conf` |
+| MangoWM accents | `configs/colors.matugen.conf` |
 | Waybar CSS | `waybar/MangoWC/matugen.css` |
 | Waybar powerline SVGs | `waybar/MangoWC/svg/` |
 | Wofi CSS | `wofi/matugen.css` |
@@ -340,3 +340,4 @@ cp ~/.config/mango/mango.desktop ~/.local/share/wayland-sessions/
 *Made with 🧡 on CachyOS*
 
 </div>
+>
