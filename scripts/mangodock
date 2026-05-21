@@ -1,0 +1,465 @@
+#!/usr/bin/env python3
+"""
+mango-dock — Minimal GTK3 layer-shell dock for MangoWM.
+
+Features:
+- Pinned apps bar at the bottom (left side) using own icons from .desktop files.
+- Wofi launcher button at the far left.
+- Running-app markers (underline) via PID tracking.
+- Matugen-compatible CSS style loaded from ~/.config/mango/dock/style.css.
+
+Requirements:
+    python3, gi (PyGObject), gtk3, gtk-layer-shell, gdk-pixbuf2
+"""
+
+import os
+import sys
+import signal
+import subprocess
+import ctypes
+import ctypes.util
+
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('GtkLayerShell', '0.1')
+gi.require_version('GdkPixbuf', '2.0')
+from gi.repository import Gtk, Gdk, Gio, GLib, GdkPixbuf, GtkLayerShell
+
+# ─── Config paths ───────────────────────────────────────────────────────────
+HOME = os.path.expanduser('~')
+CONFIG_DIR = os.path.join(HOME, '.config', 'mango', 'dock')
+PINNED_FILE = os.path.join(CONFIG_DIR, 'pinned.conf')
+STYLE_FILE   = os.path.join(CONFIG_DIR, 'style.css')
+ICON_DIRS = [
+    os.path.join(HOME, '.local', 'share', 'icons'),
+    '/usr/share/icons',
+    '/usr/share/pixmaps',
+]
+APP_DIRS = [
+    os.path.join(HOME, '.local', 'share', 'applications'),
+    '/usr/share/applications',
+]
+
+# ─── Logger ─────────────────────────────────────────────────────────────────
+def loglevel(): return 'debug' if '--debug' in sys.argv else 'info'
+
+def log(tag, *args):
+    print(f"[mangodock:{tag}] {' '.join(str(a) for a in args)}",
+          file=sys.stderr if loglevel() == 'debug' else sys.stdout)
+
+def logd(*a):  log('D', *a) if loglevel() == 'debug' else None
+def logi(*a):  log('I', *a)
+
+# ─── Icon lookup ─────────────────────────────────────────────────────────────
+def _find_icon(name):
+    """Resolve an icon name → absolute icon path."""
+    for d in ICON_DIRS:
+        if not os.path.isdir(d):
+            continue
+        for root, _sub, files in os.walk(d):
+            for f in files:
+                base, ext = os.path.splitext(f)
+                if base == name and ext in ('.png', '.svg', '.xpm', '.ico'):
+                    return os.path.join(root, f)
+    return None
+
+def desktop_icon(dpath, default=None):
+    """Read Icon= from a .desktop file; return path, icon name, or None."""
+    if not dpath or not os.path.isfile(dpath):
+        return default
+    try:
+        with open(dpath, 'r', errors='replace') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('Icon='):
+                    return line.split('=', 1)[1].strip() or default
+    except OSError:
+        pass
+    return default
+
+def _desktop_entry(cmd):
+    """Best-effort .desktop lookup for a command string."""
+    if not cmd:
+        return None
+    for d in APP_DIRS:
+        if not os.path.isdir(d):
+            continue
+        for f in sorted(os.listdir(d)):
+            if not f.endswith('.desktop'):
+                continue
+            dpath = os.path.join(d, f)
+            try:
+                with open(dpath, 'r', errors='replace') as fh:
+                    for line in fh:
+                        if line.strip().startswith('Exec=') and cmd in line:
+                            return dpath
+            except OSError:
+                continue
+    return None
+
+def icon_for_app(label, cmd=None):
+    """Resolve an icon for label/cmd via .desktop then icon name."""
+    dpath = _desktop_entry(cmd or label)
+    icon = desktop_icon(dpath, label) if dpath else label
+    path = _find_icon(icon) if not (icon.endswith('.png') or icon.endswith('.svg')) else icon
+    return path
+
+# ─── Running PID tracking ─────────────────────────────────────────────────────
+_running_pids: set[int] = set()
+
+def begin_tracking():
+    """Populate _running_pids from /proc after a short delay (app may have PID at launch)."""
+    def _fill(_t):
+        for d in os.listdir('/proc'):
+            _running_pids.add(int(d))
+        return False
+    GLib.timeout_add_seconds(2, _fill)
+
+def mark_running(pid):
+    _running_pids.add(pid)
+    logd('found', pid)
+
+# ─── DockConfig ──────────────────────────────────────────────────────────────
+class DockConfig:
+    """Read/refresh pinned apps + misc settings."""
+    def __init__(self, path):
+        self.path = path
+        self.items: list[dict] = []
+        self._mtimes = 0
+        self.fake_defaults()
+
+    def fake_defaults(self):
+        # Called as temporary: items is [] + defaults need to be refreshed from file
+
+    def parse(self, text):
+        items = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            parts = line.split('|', 2)
+            if len(parts) < 2:
+                continue
+            label = parts[0].strip()
+            cmd   = parts[1].strip()
+            icon_name = parts[2].strip() if len(parts) > 2 else None
+            icon_path = icon_for_app(icon_name or label, cmd)
+            items.append({'label': label, 'cmd': cmd,
+                          'icon_name': icon_name or label,
+                          'icon_path': icon_path or ''})
+        return items
+
+    def refresh(self):
+        if not os.path.isfile(self.path):
+            return
+        try:
+            st = os.stat(self.path)
+        except OSError:
+            return
+        if st.st_mtime == self._mtimes:
+            return
+        self._mtimes = st.st_mtime
+        with open(self.path, 'r') as f:
+            self.items = self.parse(f.read())
+
+    def default_items(self):
+        """Return fallback pinned list when no config file exists."""
+        return [
+            {'label': 'terminal', 'cmd': 'kitty',
+             'icon_name': 'terminal', 'icon_path': icon_for_app('terminal', 'kitty')},
+            {'label': 'filemgr',  'cmd': 'dolphin',
+             'icon_name': 'folder',  'icon_path': icon_for_app('folder',  'dolphin')},
+            {'label': 'browser',  'cmd': 'firefox',
+             'icon_name': 'web-browser', 'icon_path': icon_for_app('web-browser', 'firefox')},
+            {'label': 'mail',     'cmd': 'thunderbird',
+             'icon_name': 'mail-message', 'icon_path': icon_for_app('mail-message', 'thunderbird')},
+            {'label': 'settings', 'cmd': 'nwg-look',
+             'icon_name': 'preferences-system', 'icon_path': icon_for_app('preferences-system', 'nwg-look')},
+        ]
+
+# ─── Dock button ─────────────────────────────────────────────────────────────
+class DockButton(Gtk.EventBox):
+    """A single pinned-app button in the dock."""
+    def __init__(self, item):
+        super().__init__()
+        self.item = item
+        self.btop   = item.get('_is_btop', False)
+        self._pid   = item.get('_pid')
+        self.running = (self._pid is not None)
+
+        # VBox: [icon] [label [underline]]
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        vb.set_margin_top(4); vb.set_margin_bottom(4)
+        vb.set_margin_start(4); vb.set_margin_end(4)
+        self.add(vb)
+
+        self._lbl = Gtk.Label.new(item.get('label', '?'))
+        self._lbl.set_ellipsize(3)          # PANGO_ELLIPSIZE_END
+        self._lbl.set_max_width_chars(10)
+        vb.pack_start(self._lbl, False, False, 0)
+
+        if self.running:
+            self._active_mark = Gtk.Label.new('\u2015')  # em dash underline
+            self._active_mark.set_attributes(None)
+            self._active_mark.set_halign(Gtk.Align.CENTER)
+            vb.pack_end(self._active_mark, False, False, 0)
+        else:
+            self._active_mark = None
+
+    def set_running(self, pid=None):
+        self.running = (pid is not None)
+        self._pid = pid
+        if not hasattr(self, '_active_mark') or not self._active_mark:
+            return
+        if self.running:
+            self._active_mark.set_text('\u2015')
+        else:
+            self._active_mark.set_text(' ')
+
+# ─── Main dock ───────────────────────────────────────────────────────────────
+class MangoDock:
+    ICON_SIZE = 48
+    ICON_SIZE_SMALL = 36
+
+    def __init__(self):
+        self.running  : dict[str, bool] = {}   # label → bool
+        self.visible  : set[str]      = set()
+        self.config   = DockConfig(PINNED_FILE)
+        self.config.refresh()
+        self._items   : list[DockButton] = []
+
+        # ── Window ──
+        self.win = Gtk.Window(type=Gtk.WindowType.TOPLEVEL,
+                              decorated=False,
+                              skip_pager_hint=True,
+                              skip_taskbar_hint=True,
+                              resizable=False,
+                              type_hint=Gdk.WindowTypeHint.DOCK)
+
+        # ── Layer-shell init ──
+        GtkLayerShell.init_for_window(self.win)
+        GtkLayerShell.set_namespace(self.win, 'mango-dock')
+        GtkLayerShell.set_anchor(self.win,
+                                 GtkLayerShell.Edge.BOTTOM, True)
+        GtkLayerShell.set_anchor(self.win,
+                                 GtkLayerShell.Edge.LEFT,   True)
+        GtkLayerShell.set_anchor(self.win,
+                                 GtkLayerShell.Edge.TOP,    False)
+        GtkLayerShell.set_anchor(self.win,
+                                 GtkLayerShell.Edge.RIGHT,  False)
+        GtkLayerShell.set_layer(self.win, GtkLayerShell.Layer.BOTTOM)
+        GtkLayerShell.set_keyboard_interactivity(self.win, False)
+        if self.have_monitor():
+            GtkLayerShell.set_monitor(self.win, self.primary_monitor())
+
+        # ── Layout box ──
+        self.hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=2)
+        self.win.add(self.hbox)
+
+        # ── Wofi launcher button ──
+        launcher = Gtk.EventBox()
+        launcher.add(Gtk.Label.new('  \u25D6  '))   # right-pointing play-triangle
+        launcher.connect('button-press-event', self._on_launcher)
+        self.hbox.pack_end(launcher, False, False, 0)
+
+        self._build_buttons()
+
+        # ── Style ──
+        self._load_style()
+
+        # ── Show ──
+        self.win.show_all()
+
+        # ── Refresh loops ──
+        GLib.timeout_add_seconds(2, self._refresh)
+        begin_tracking()
+
+        logi('started, pinned=%d' % len(self._items))
+
+    def have_monitor(self):
+        try:
+            return Gdk.Screen.get_default().get_monitor_at_window(
+                self.win.get_window()) is not None
+        except Exception:
+            return False
+
+    def primary_monitor(self):
+        d = Gdk.Display.get_default()
+        return d.get_primary_monitor()
+
+    def _build_buttons(self):
+        for child in list(self.hbox.get_children())[:-1]:  # keep launcher
+            child.destroy()
+        self._items = []
+
+        items = self.config.items or self.config.default_items()
+        for item in items:
+            eb = Gtk.EventBox()
+            vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                         spacing=2, halign=Gtk.Align.CENTER)
+
+            icon_path = item.get('icon_path')
+            if icon_path and os.path.isfile(icon_path):
+                pb = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                    icon_path, width=self.ICON_SIZE, height=self.ICON_SIZE,
+                    preserve_aspect_ratio=True)
+                img = Gtk.Image.new_from_pixbuf(pb)
+            else:
+                img = Gtk.Label.new('•')
+                img.get_style_context().add_class('no-icon')
+            img.set_pixel_size(self.ICON_SIZE)
+            vb.pack_start(img, False, False, 0)
+
+            lbl = Gtk.Label.new(item.get('label', '?'))
+            lbl.set_ellipsize(3)
+            vb.add(lbl)
+            eb.add(vb)
+            eb.connect('button-press-event',
+                       self._on_click, dict(item))
+            self.hbox.pack_start(eb, False, False, 0)
+            self._items.append(eb)
+
+        self.win.show_all()
+
+    def _on_launcher(self, _eb, _event):
+        logi('launcher clicked')
+        subprocess.Popen(['wofi', '--show', 'drun',
+                          '--conf', os.path.join(HOME, '.config', 'wofi', 'spotlight.conf'),
+                          '--no-actions'],
+                         close_fds=True)
+        return True
+
+    def _on_click(self, _eb, event, item):
+        btn = event.button
+        if btn == 1:
+            # Left-click: toggle wofi run
+            logi('launch', item.get('cmd', '?'))
+            subprocess.Popen(['wofi', '--show', 'run',
+                              '--conf', os.path.join(HOME, '.config', 'wofi', 'spotlight.conf'),
+                              '--no-actions'],
+                             close_fds=True)
+        elif btn == 2:
+            # Middle-click: kill process (best effort)
+            self._try_kill(item)
+        return True
+
+    def _try_kill(self, item):
+        cmd = item.get('cmd', '')
+        try:
+            killed = subprocess.run(
+                ['pkill', '-x'] + cmd.split(),
+                stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+            logi('pkill', cmd, '→', killed.returncode)
+        except OSError as e:
+            logi('pkill error', e)
+
+    def _refresh(self):
+        self.config.refresh()
+        if self.config.items and self.config.items != self.config.items:
+            self._build_buttons()
+        self.config.check_periodic()
+        return True   # keep timeout alive
+
+    def _load_style(self):
+        os.makedirs(CONFIG_DIR, exist_ok=True)
+        css = DEFAULT_STYLE
+        if os.path.isfile(STYLE_FILE):
+            try:
+                with open(STYLE_FILE) as f:
+                    css = f.read()
+            except OSError:
+                pass
+        else:
+            with open(STYLE_FILE, 'w') as f:
+                f.write(css)
+
+        p = Gtk.CssProvider()
+        p.load_from_data(css.encode())
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(), p, 600)
+        logi('style loaded from', STYLE_FILE)
+
+# ─── Style default ───────────────────────────────────────────────────────────
+DEFAULT_STYLE = """\
+# Dock defaults : runtime reads ~/.config/mango/dock/style.css */
+
+eventbox {
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+eventbox:hover {
+    background: rgba(210, 180, 140, 0.22);
+    border-radius: 8px;
+}
+
+eventbox label {
+    color: #E8D5C0;
+    font-size:  9px;
+}
+
+eventbox .no-icon {
+    color:   #D0B8A0;
+    font-size: 20px;
+}
+
+eventbox:hover label,
+eventbox:hover .no-icon {
+    color: #FFF8EE;
+}
+
+window {
+    background: rgba(20, 17, 14, 0.88);
+}
+"""
+
+# ─── Signal handling ─────────────────────────────────────────────────────────
+def _handle_sig(_n, _f):
+    logi('SIGTERM received — exiting')
+    Gtk.main_quit()
+
+# ─── Main ────────────────────────────────────────────────────────────────────
+def main():
+    logi('python', sys.version.split()[0], 'python-gi', gi.version_info)
+
+    signal.signal(signal.SIGTERM, _handle_sig)
+    signal.signal(signal.SIGINT,  _handle_sig)
+
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    os.makedirs(os.path.dirname(STYLE_FILE), exist_ok=True)
+
+    if not os.path.isfile(PINNED_FILE):
+        DemoConfig.write_default_pinned()
+        logi('wrote default', PINNED_FILE, '— edit and restart the dock')
+
+    app  = Gtk.Application('mango-dock', Gio.ApplicationFlags.FLAGS_NONE)
+    win0 = [None]
+
+    def _on_activate(application):
+        win0[0] = MangoDock()
+        application.add_window(win0[0].win)
+
+    app.connect('activate', _on_activate)
+    app.run(sys.argv)
+
+class DemoConfig:
+    @staticmethod
+    def write_default_pinned():
+        path = os.path.join(HOME, '.config', 'mango', 'dock', 'pinned.conf')
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        defaults = [
+            ['Kitty',        'kitty',            'utilities-terminal'],
+            ['Dolphin',      'dolphin',          'system-file-manager'],
+            ['Firefox',      'firefox',          'firefox'],
+            ['Mango Look',   'nwg-look',         'preferences-desktop-theme'],
+            ['Waybar',       'waybar',           'utilities-terminal'],
+        ]
+        with open(path, 'w') as f:
+            f.write('# mango-dock pinned apps\n')
+            f.write('# Format: Label|command|[icon-name]\n\n')
+            for row in defaults:
+                f.write(' | '.join(row) + '\n')
+
+# ─── Entry ───────────────────────────────────────────────────────────────────
+if __name__ == '__main__':
+    main()

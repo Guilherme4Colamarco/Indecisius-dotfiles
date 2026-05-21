@@ -1,0 +1,25 @@
+window {
+    background-color: @surface;
+    border: 2px solid @primary;
+    border-radius: 14px;
+}
+
+#entry {
+    color: @on-surface;
+    background-color: transparent;
+    padding: 8px;
+}
+
+#entry:selected {
+    background-color: @primary;
+    color: @on-primary;
+    border-radius: 10px;
+}
+
+#text {
+    color: @on-surface;
+}
+
+#img {
+    margin-right: 10px;
+}

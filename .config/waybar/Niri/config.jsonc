@@ -1,0 +1,29 @@
+{
+  "layer": "top",
+  "position": "top",
+  "spacing": 6,
+  "reload_style_on_change": true,
+
+  "modules-left":[
+    "custom/logo",
+    "custom/mpris",
+    "niri/workspaces"
+  ],
+
+  "custom/logo": {
+    "format" : "󰣇   Niri",
+    "tooltip": false,
+    "tooltip-format": "App launcher",
+    "on-click": "pgrep -x wofi >/dev/null && pkill wofi || wofi --show drun --conf ~/.config/wofi/spotlight.conf --no-actions",
+    "on-click-right": "kitty"
+  },
+
+  "niri/workspaces": {
+    "format": "{icon}",
+    "format-icons": { "active": "", "default": "" }
+  },
+
+  "include": [
+    "~/.config/waybar/Modules/*.jsonc"
+  ]
+}

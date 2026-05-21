@@ -20,7 +20,7 @@ SVG
 emit() {
   local code="$1" label="$2" color="$3" icon
   icon=$(make_icon "$code" "$label" "$color")
-  printf '%-2s %s\0icon\x1f%s\n' "$code" "$label" "$icon"
+  printf 'img:%s:text:%-2s %s\n' "$icon" "$code" "$label"
 }
 
 choice=$({
@@ -36,7 +36,7 @@ choice=$({
   emit VG vertical_grid '#80cbc4'
   emit VK vertical_deck '#f07178'
   emit DW dwindle '#b2ccd6'
-} | rofi -dmenu -i -show-icons -p 'Mango layout') || exit 0
+} | wofi --dmenu --conf "$HOME/.config/wofi/layout.conf" --allow-images --parse-search --cache-file /dev/null --prompt 'Mango layout') || exit 0
 
 code=${choice%% *}
 [ -n "$code" ] || exit 0

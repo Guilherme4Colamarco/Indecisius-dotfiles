@@ -1,0 +1,84 @@
+/* Wofi Spotlight — compact app launcher */
+@import url("file:///home/geko/.config/wofi/matugen.css");
+
+@define-color bg rgba(3, 4, 8, 0.65);
+@define-color bg_input #05070d;
+@define-color bg_hover #0a0e1a;
+@define-color fg @matugen_primary;
+@define-color fg_dim #898d99;
+@define-color accent @matugen_on_primary_container;
+@define-color border_color @matugen_primary_container;
+@define-color selected_bg @matugen_primary_container;
+
+* {
+  font-family: "GeistMono Nerd Font", monospace;
+  font-size: 16px;
+}
+
+window {
+  background-color: @bg;
+  color: @fg;
+  border: 2px solid @border_color;
+  border-radius: 16px;
+}
+
+#outer-box {
+  margin: 16px;
+  background-color: transparent;
+}
+
+#input {
+  margin: 0 0 12px 0;
+  padding: 10px 14px;
+  min-height: 24px;
+  background-color: @bg_input;
+  color: @fg;
+  border: 1px solid @border_color;
+  border-radius: 10px;
+  outline: none;
+  box-shadow: none;
+}
+
+#scroll, #inner-box {
+  background-color: transparent;
+  border: none;
+}
+
+#entry {
+  margin: 2px 0;
+  padding: 7px 10px;
+  min-height: 34px;
+  background-color: transparent;
+  color: @fg;
+  border-radius: 8px;
+  outline: none;
+}
+
+#entry:selected {
+  background-color: @selected_bg;
+  color: @accent;
+  border-radius: 8px;
+}
+
+#entry:hover {
+  background-color: @bg_hover;
+  border-radius: 8px;
+}
+
+#text {
+  color: inherit;
+  margin: 0 0 0 10px;
+}
+
+#text:selected {
+  color: @accent;
+}
+
+#img {
+  margin: 0 10px 0 0;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+scrollbar { background-color: transparent; border: none; }
+scrollbar slider { background-color: @border_color; border-radius: 0; min-width: 4px; min-height: 24px; }

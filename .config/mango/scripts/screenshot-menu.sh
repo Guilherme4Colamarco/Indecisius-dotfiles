@@ -1,6 +1,6 @@
 #!/bin/bash
 # Per-monitor screenshot menu for MangoWM (wlroots).
-# Uses wlr-randr for output names; see https://github.com/mangowm/mango/wiki
+# Uses wlr-randr for output names.
 
 set -euo pipefail
 
@@ -11,12 +11,12 @@ fi
 
 MONITORS=$(wlr-randr | awk '/^Output /{print $2}')
 
-SELECTED=$(echo "$MONITORS" | rofi -dmenu -i -p "Capture monitor" -lines 8 -theme clipboard) || exit 1
+SELECTED=$(printf '%s\n' "$MONITORS" | wofi --dmenu --conf "$HOME/.config/wofi/menu.conf" --prompt "Capture monitor") || exit 1
 [ -z "$SELECTED" ] && exit 1
 
 OUTPUT_NAME=$(echo "$SELECTED" | awk '{print $1}')
 
-if [ "$1" = "--file" ]; then
+if [ "${1:-}" = "--file" ]; then
 	mkdir -p "${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots"
 	FILENAME="Screenshot_${OUTPUT_NAME}_$(date '+%Y-%m-%d_%H-%M-%S').png"
 	grim -o "$OUTPUT_NAME" "${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots/$FILENAME"

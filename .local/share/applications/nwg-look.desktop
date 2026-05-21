@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=GTK Settings
+GenericName=Adjust Look and Feel
+Comment=Configure GTK theme, fonts and cursor, then sync Mango/XCursor
+Keywords=windows;preferences;settings;theme;style;appearance;look;cursor;font;gtk;
+Icon=nwg-look
+Exec=/home/geko/.config/mango/scripts/nwg-look-sync.sh --open
+NotShowIn=GNOME;KDE;XFCE;MATE;
+StartupNotify=true
+Categories=GTK;Settings;DesktopSettings;

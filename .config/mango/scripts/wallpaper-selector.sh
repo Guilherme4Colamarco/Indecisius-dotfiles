@@ -1,13 +1,12 @@
 #!/bin/bash
-# Wallpaper selector using rofi with wallpaper-selector theme
-# Uses awww for smooth transitions
+# Wallpaper selector using Wofi.
+# Uses awww for smooth transitions.
 set -euo pipefail
 
 WALLPAPER_DIR="${HOME}/Imagens/Wallpapers"
 [ -d "$WALLPAPER_DIR" ] || WALLPAPER_DIR="${HOME}/Pictures"
 [ -d "$WALLPAPER_DIR" ] || { notify-send "Wallpaper" "Pasta de imagens não encontrada"; exit 1; }
 
-# Filter only awww-supported image formats
 mapfile -t images < <(find "$WALLPAPER_DIR" -maxdepth 2 -type f \( \
     -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o \
     -iname '*.webp' -o -iname '*.gif' -o -iname '*.bmp' -o \
@@ -17,20 +16,21 @@ mapfile -t images < <(find "$WALLPAPER_DIR" -maxdepth 2 -type f \( \
 
 [ ${#images[@]} -eq 0 ] && { notify-send "Wallpaper" "Nenhuma imagem encontrada em $WALLPAPER_DIR"; exit 1; }
 
-# Build rofi entries (filename only for display, full path as icon data)
-menu=""
+menu_file=$(mktemp)
+trap 'rm -f "$menu_file"' EXIT
 for img in "${images[@]}"; do
-    name=$(basename "$img")
-    menu+="${name}\x00icon\x1f${img}\n"
+    rel="${img#"$WALLPAPER_DIR"/}"
+    printf '%s\n' "$rel" >> "$menu_file"
 done
 
-selected=$(printf '%b' "$menu" | rofi -dmenu -i -show-icons -p 'Wallpaper' -theme wallpaper-selector) || exit 0
+selected=$(wofi --dmenu --conf "$HOME/.config/wofi/wallpaper.conf" --prompt 'Wallpaper' < "$menu_file") || exit 0
 [ -n "$selected" ] || exit 0
 
-# Find full path from basename
+target="${WALLPAPER_DIR}/${selected}"
 for img in "${images[@]}"; do
-    if [ "$(basename "$img")" = "$selected" ]; then
-        SWWW_TRANSITION=any awww img "$img"
+    if [ "$img" = "$target" ]; then
+        AWWW_TRANSITION=random awww img "$img"
+        "$HOME/.config/mango/scripts/update-matugen-accent.sh" "$img" >/dev/null 2>&1 || true
         exit 0
     fi
 done

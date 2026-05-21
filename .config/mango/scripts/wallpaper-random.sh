@@ -20,5 +20,6 @@ mapfile -t images < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( \
 selected="${images[RANDOM % ${#images[@]}]}"
 
 # Set with awww (daemon handles transition)
-# Random transition
-SWWW_TRANSITION=any awww img "$selected"
+# Random transition type each time
+AWWW_TRANSITION=random awww img "$selected"
+"$HOME/.config/mango/scripts/update-matugen-accent.sh" "$selected" >/dev/null 2>&1 || true

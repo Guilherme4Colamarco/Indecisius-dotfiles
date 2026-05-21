@@ -89,3 +89,7 @@ if type -q starship
         starship module custom.transient_time
     end
 end
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/geko/.local/bin" $PATH

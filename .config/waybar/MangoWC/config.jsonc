@@ -1,21 +1,61 @@
+/*
+# ---------------------------------------
+# cybr-waybar     waybar config (adapted for MangoWC)
+# Project:        https://github.com/cybrcore/cybr-waybar
+# Author:         scherrer-txt   |   License:     GPL-3.0
+# Source:         ~/.config/waybar/MangoWC/config.jsonc
+# ---------------------------------------
+*/
 {
   "layer": "top",
   "position": "top",
-  "spacing": 6,
+  "height": 31,
+  "spacing": 0,
   "reload_style_on_change": true,
 
-  "modules-left":[
+  "modules-left": [
     "custom/logo",
+    "custom/arrow-left-re0",
+    "ext/workspaces",
+    "custom/arrow-left-no1"
+  ],
+
+  "modules-center": [
+    "custom/arrow-right-no1",
+    "clock",
+    "custom/arrow-left-no1"
+  ],
+
+  "modules-right": [
+    "custom/arrow-right-no1",
     "custom/brightness",
-    "wlr/taskbar",
-    "custom/mpris",
-    "ext/workspaces"
-],
+    "network",
+    "pulseaudio",
+    "tray",
+    "custom/arrow-right-re0",
+    "custom/power"
+  ],
+
+  "custom/arrow-right-no1": { "format": "  ", "tooltip": false },
+  "custom/arrow-left-no1": { "format": "  ", "tooltip": false },
+  "custom/arrow-right-re0": { "format": "  ", "tooltip": false },
+  "custom/arrow-left-re0": { "format": "  ", "tooltip": false },
+  "custom/arrow-right-gr0": { "format": "  ", "tooltip": false },
+  "custom/arrow-left-gr0": { "format": "  ", "tooltip": false },
+
+  "custom/logo": {
+    "format": "  ",
+    "tooltip": false,
+    "tooltip-format": "Mango launcher",
+    "on-click": "wofi --show drun --conf ~/.config/wofi/spotlight.conf --no-actions",
+    "on-click-right": "kitty"
+  },
 
   "custom/brightness": {
     "exec": "~/.config/mango/scripts/brightness-ddc.sh",
     "return-type": "json",
-    "interval": 5,
+    "exec-on-event": false,
+    "interval": 30,
     "on-scroll-up": "~/.config/mango/scripts/brightness-ddc.sh up",
     "on-scroll-down": "~/.config/mango/scripts/brightness-ddc.sh down",
     "on-click": "~/.config/mango/scripts/brightness-ddc.sh up",
@@ -23,34 +63,40 @@
     "tooltip": true
   },
 
-"wlr/taskbar": {
-    "format": "{icon}",
-    "icon-size": 16,
-    "tooltip-format": "{title}",
-    "on-click": "minimize-raise",
-    "on-click-middle": "close",
-    "markup": true
+  "ext/workspaces": {
+    "format": "{name}",
+    "ignore-hidden": true,
+    "on-click": "activate",
+    "on-click-right": "deactivate",
+    "on-scroll-up": "mmsg -s -d viewtoleft,0",
+    "on-scroll-down": "mmsg -s -d viewtoright,0",
+    "smooth-scrolling-threshold": 1,
+    "sort-by-id": true
   },
 
-"custom/logo": {
-  "format" : "󰣇   MangoWM",
-  "tooltip": false,
-  "tooltip-format": "App launcher",
-  "on-click": "pkill rofi || rofi -show drun",
-  "on-click-right": "kitty"
-},
+  "clock": {
+    "format": "  {:%H:%M}",
+    "format-alt": "  {:%a %d/%m}",
+    "interval": 20,
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "left",
+      "on-scroll": 1,
+      "on-click-right": "mode"
+    }
+  },
 
-"ext/workspaces": {
-  "format": "{name}",
-  "ignore-hidden": true,
-  "on-click": "activate",
-  "on-click-right": "deactivate",
-  "sort-by-id": true
-},
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+    "show-passive-items": true
+  },
 
-"include": [
-  "~/.config/waybar/Modules/*.jsonc"
-],
+  "include": [
+    "~/.config/waybar/Modules/*.jsonc"
+  ],
 
-"style": "~/.config/waybar/MangoWC/style.css"
+  "style": "~/.config/waybar/MangoWC/style.css"
 }

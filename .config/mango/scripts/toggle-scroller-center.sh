@@ -1,12 +1,25 @@
 #!/bin/bash
-# Toggle scroller center mode on/off
+# Toggle Mango scroller center mode on/off.
+# Source of truth: ~/.config/mango/hyprmango/layout.conf
+
+set -euo pipefail
 
 CONF="$HOME/.config/mango/hyprmango/layout.conf"
 
-# Get current value
-current=$(grep "^scroller_prefer_center" "$CONF" | awk -F'=' '{print $2}' | tr -d ' ')
+get_value() {
+    grep -E "^$1[[:space:]]*=" "$CONF" | tail -n 1 | cut -d= -f2 | tr -d '[:space:]'
+}
 
-if [ "$current" = "1" ]; then
+set_value() {
+    local key="$1"
+    local value="$2"
+    sed -i -E "s/^(${key}[[:space:]]*=[[:space:]]*).*/\1${value}/" "$CONF"
+}
+
+focus_center=$(get_value scroller_focus_center)
+prefer_center=$(get_value scroller_prefer_center)
+
+if [ "$focus_center" = "1" ] || [ "$prefer_center" = "1" ]; then
     new=0
     msg="Scroller center: OFF"
 else
@@ -14,8 +27,8 @@ else
     msg="Scroller center: ON"
 fi
 
-sed -i "s/^scroller_focus_center = .*/scroller_focus_center = $new/" "$CONF"
-sed -i "s/^scroller_prefer_center = .*/scroller_prefer_center = $new/" "$CONF"
+set_value scroller_focus_center "$new"
+set_value scroller_prefer_center "$new"
 
 mmsg -d reload_config
 notify-send "$msg"

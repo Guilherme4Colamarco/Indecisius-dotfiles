@@ -1,7 +1,6 @@
-/* Wlogout Theme - Catppuccin Mocha Style (matching Rofi/Waybar) */
+/* Wlogout Theme - Catppuccin Mocha Style */
 
 * {
-    background-image: none;
     box-shadow: none;
     font-family: "JetBrainsMono Nerd Font", sans-serif;
     font-size: 16px;
@@ -10,58 +9,64 @@
 }
 
 window {
-    background-color: rgba(15, 15, 23, 0.72);
+    background-color: rgba(15, 15, 23, 0.85);
 }
 
 button {
     color: #cdd6f4;
-    background-color: rgba(30, 30, 46, 0.72);
-    border: 2px solid rgba(137, 180, 250, 0.10);
-    border-radius: 22px;
-    margin: 12px;
-    padding: 84px 36px 28px 36px;
+    background-color: rgba(30, 30, 46, 0.80);
+    border: 2px solid rgba(137, 180, 250, 0.15);
+    border-radius: 16px;
+    margin: 16px;
+    padding: 80px 20px 20px 20px;
+    background-position: center 24px;
     background-repeat: no-repeat;
-    background-position: center 34%;
-    background-size: 72px;
+    background-size: 64px;
 }
 
 button:focus {
     color: #ffffff;
-    background-color: rgba(49, 50, 68, 0.88);
-    border-color: rgba(137, 180, 250, 0.70);
+    background-color: rgba(49, 50, 68, 0.90);
+    border-color: rgba(137, 180, 250, 0.75);
 }
 
 button:hover {
     color: #ffffff;
-    background-color: rgba(59, 66, 82, 0.92);
-    border-color: rgba(137, 180, 250, 0.85);
+    background-color: rgba(59, 66, 82, 0.95);
+    border-color: rgba(137, 180, 250, 0.90);
 }
 
 button:active {
-    background-color: rgba(76, 86, 106, 0.92);
-    border-color: rgba(243, 139, 168, 0.90);
+    background-color: rgba(76, 86, 106, 0.95);
+    border-color: rgba(243, 139, 168, 0.95);
 }
 
 #shutdown {
-    background-image: image(url("/home/geko/.config/wlogout/icons/power.png"));
+    border-color: rgba(243, 139, 168, 0.60);
+    background-image: url("icons/power.png");
 }
 
 #reboot {
-    background-image: image(url("/home/geko/.config/wlogout/icons/restart.png"));
+    border-color: rgba(250, 179, 135, 0.60);
+    background-image: url("icons/restart.png");
 }
 
 #logout {
-    background-image: image(url("/home/geko/.config/wlogout/icons/logout.png"));
+    border-color: rgba(137, 180, 250, 0.60);
+    background-image: url("icons/logout.png");
 }
 
 #suspend {
-    background-image: image(url("/home/geko/.config/wlogout/icons/sleep.png"));
+    border-color: rgba(249, 226, 175, 0.60);
+    background-image: url("icons/sleep.png");
 }
 
 #hibernate {
-    background-image: image(url("/home/geko/.config/wlogout/icons/hibernate.png"));
+    border-color: rgba(203, 166, 247, 0.60);
+    background-image: url("icons/hibernate.png");
 }
 
 #lock {
-    background-image: image(url("/home/geko/.config/wlogout/icons/lock.png"));
+    border-color: rgba(166, 227, 161, 0.60);
+    background-image: url("icons/lock.png");
 }

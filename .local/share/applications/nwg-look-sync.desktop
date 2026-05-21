@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Aparencia (nwg-look)
+Comment=Configure GTK theme, fonts and cursor with nwg-look
+Exec=/home/geko/.config/mango/scripts/nwg-look-sync.sh --open
+Icon=preferences-desktop-theme
+Terminal=false
+Categories=Settings;DesktopSettings;GTK;

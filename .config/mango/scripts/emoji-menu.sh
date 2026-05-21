@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-choice=$(cat <<'EMOJI' | rofi -dmenu -i -p 'Emoji' -lines 12 -theme clipboard
+choice=$(cat <<'EMOJI' | wofi --dmenu --conf "$HOME/.config/wofi/emoji.conf" --prompt 'Emoji'
 😀 grinning face
 😄 smiling eyes
 😁 beaming face

@@ -1,41 +1,41 @@
 {
-    "label" : "shutdown",
-    "action" : "systemctl poweroff",
-    "text" : "Shutdown",
-    "keybind" : "o"
+    "label": "shutdown",
+    "action": "systemctl poweroff",
+    "text": "Shutdown",
+    "keybind": "o"
 }
 
 {
-    "label" : "suspend",
-    "action" : "systemctl suspend ; bash ~/.config/Scripts/random_wall_on_lockscr.sh",
-    "text" : "Suspend",
-    "keybind" : "s"
+    "label": "reboot",
+    "action": "systemctl reboot",
+    "text": "Reboot",
+    "keybind": "r"
 }
 
 {
-    "label" : "reboot",
-    "action" : "systemctl reboot",
-    "text" : "Reboot",
-    "keybind" : "r"
+    "label": "logout",
+    "action": "loginctl terminate-user $USER",
+    "text": "Logout",
+    "keybind": "e"
 }
 
 {
-    "label" : "hibernate",
-    "action" : "systemctl hibernate",
-    "text" : "Hibernate",
-    "keybind" : "h"
+    "label": "suspend",
+    "action": "systemctl suspend",
+    "text": "Suspend",
+    "keybind": "s"
 }
 
 {
-    "label" : "logout",
-    "action" : "loginctl terminate-user $USER",
-    "text" : "Logout",
-    "keybind" : "e"
+    "label": "hibernate",
+    "action": "systemctl hibernate",
+    "text": "Hibernate",
+    "keybind": "h"
 }
 
 {
-    "label" : "lock",
-    "action" : "bash ~/.config/Scripts/random_wall_on_lockscr.sh",
-    "text" : "Lock",
-    "keybind" : "l"
+    "label": "lock",
+    "action": "loginctl lock-session",
+    "text": "Lock",
+    "keybind": "l"
 }

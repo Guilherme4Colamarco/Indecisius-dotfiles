@@ -1,8 +1,0 @@
-@theme "spotlight"
-
-configuration {
-  font: "JetBrainsMono Nerd Font 13";
-  drun-display-format: "{name}";
-  show-icons: true;
-  icon-theme: "Papirus";
-}

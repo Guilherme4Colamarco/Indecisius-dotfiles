@@ -1,12 +1,15 @@
 {
   "modules-right": [
-        "custom/power",
-	      "temperature",
+        "custom/arrow-right-no1",
+        "custom/brightness",
+        "temperature",
         "cpu",
         "memory",
         "disk",
         "network",
-        "pulseaudio"
+        "pulseaudio",
+        "custom/arrow-right-re0",
+        "custom/power"
     ]
 
 }

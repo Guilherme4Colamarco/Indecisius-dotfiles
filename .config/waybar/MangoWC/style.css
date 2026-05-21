@@ -1,45 +1,83 @@
+/*
+# ---------------------------------------
+# cybrcore    lucid theme for waybar (adapted for MangoWC)
+# Project:    https://github.com/cybrcore/cybr-waybar
+# Author:     scherrer-txt   |   License:     GPL-3.0
+# Source:     ~/.config/waybar/MangoWC/style.css
+# ---------------------------------------
+*/
+
+@import "matugen.css";
+
+/* === VARIABLES === */
+
+@define-color no0 #030408;
+@define-color no1 @matugen-surface;
+@define-color no2 @matugen-primary-container;
+
+@define-color re0 @matugen-primary;
+@define-color re1 @matugen-error;
+@define-color re2 @matugen-primary-container;
+
+@define-color gr0 @matugen-on-primary-container;
+@define-color gr1 #15633F;
+@define-color gr2 #0C3423;
+
+@define-color ye0 #F2D230;
+@define-color ye1 #635618;
+@define-color ye2 #332D10;
+
+@define-color bl0 #3061F2;
+@define-color bl1 #152966;
+@define-color bl2 #0C1737;
+
+@define-color vi0 #A130F2;
+@define-color vi1 #421666;
+@define-color vi2 #230D37;
+
+@define-color cy0 #29BECC;
+@define-color cy1 #124E56;
+@define-color cy2 #0B292F;
+
+@define-color wh0 @matugen-on-surface;
+@define-color wh1 #393B42;
+@define-color wh2 #1E2025;
+
+@define-color me0 #4D5A80;
+@define-color me1 #212638;
+@define-color me2 #0D1120;
+
+@define-color or0 #F26118;
+@define-color or1 #63290E;
+@define-color or2 #33170B;
+
+@define-color pi0 #F230B2;
+@define-color pi1 #63164C;
+@define-color pi2 #330D2A;
+
+
+/* === GLOBAL === */
+
 * {
-    font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
-    font-size: 13px;
-    min-height: 24px;
-    font-weight: 600;
+	font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
+	font-size: 15px;
+	letter-spacing: -0.04em;
+	font-weight: 500;
+	min-height: 0;
 }
 
-/* Catppuccin Mocha palette */
-@define-color base      #1e1e2e;
-@define-color mantle    #181825;
-@define-color crust     #11111b;
-@define-color text      #cdd6f4;
-@define-color subtext1  #bac2de;
-@define-color surface0  #313244;
-@define-color surface1  #45475a;
-@define-color surface2  #585b70;
-@define-color lavender  #b4befe;
-@define-color blue      #89b4fa;
-@define-color sapphire  #74c7ec;
-@define-color sky       #89dceb;
-@define-color teal      #94e2d5;
-@define-color green     #a6e3a1;
-@define-color yellow    #f9e2af;
-@define-color peach     #fab387;
-@define-color maroon    #eba0ac;
-@define-color red       #f38ba8;
-@define-color mauve     #cba6f7;
-@define-color pink      #f5c2e7;
-@define-color flamingo  #f2cdcd;
-@define-color rosewater #f5e0dc;
-
 window#waybar {
-    background-color: transparent;
-    color: @text;
-    padding: 6px 10px;
+	background: transparent;
+	opacity: 1;
 }
 
 window#waybar.hidden {
-    opacity: 0.2;
+	opacity: 0;
 }
 
-/* Pills flutuantes — fundo surface0 com borda sutil */
+
+/* === MODULE DEFAULTS === */
+
 #workspaces,
 #clock,
 #cpu,
@@ -48,161 +86,301 @@ window#waybar.hidden {
 #temperature,
 #network,
 #pulseaudio,
-#backlight,
 #battery,
-#custom-power,
-#custom-logo,
-#custom-mpris,
+#backlight,
 #custom-brightness,
-#taskbar {
-    background: @surface0;
-    border: 1px solid @surface1;
-    border-radius: 12px;
-    padding: 4px 12px;
-    margin: 3px 4px;
-    color: @text;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+#custom-power {
+	background-color: @no1;
+	border: none;
+	border-radius: 0;
+	padding: 0 14px;
+	margin: 0;
+	color: @re0;
 }
 
-/* Workspaces */
+
+/* === BUTTON SIZE === */
+
+#tray,
+#custom-brightness,
+#pulseaudio,
+#network,
+#cpu,
+#memory,
+#temperature,
+#battery,
+#backlight {
+	padding: 0 16px;
+	min-width: 15px;
+}
+
+
+/* === POWERLINE ARROWS === */
+
+#custom-arrow-left-no1 {
+	background-image: url('svg/no1-left.svg');
+	background-position: left;
+	background-repeat: no-repeat;
+	background-size: contain;
+	min-width: 14px;
+}
+
+#custom-arrow-right-no1 {
+	background-image: url('svg/no1-right.svg');
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	min-width: 14px;
+}
+
+#custom-arrow-left-re0 {
+	background-image: url('svg/re0-left.svg');
+	background-position: left;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-color: @no1;
+	min-width: 14px;
+}
+
+#custom-arrow-right-re0 {
+	background-image: url('svg/re0-right.svg');
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-color: @no1;
+	min-width: 14px;
+}
+
+#custom-arrow-left-gr0 {
+	background-image: url('svg/gr0-left.svg');
+	background-position: left;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-color: @no1;
+	min-width: 14px;
+}
+
+#custom-arrow-right-gr0 {
+	background-image: url('svg/gr0-right.svg');
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-color: @no1;
+	min-width: 14px;
+}
+
+
+/* === LOGO === */
+
+#custom-logo {
+	color: @no0;
+	background-color: @re0;
+	font-weight: 800;
+	padding: 0 16px;
+}
+
+#custom-logo:hover {
+	background-color: @gr0;
+	color: @no0;
+}
+
+
+/* === WORKSPACES === */
+
 #workspaces {
-    padding: 2px 6px;
+	background-color: @no1;
+	border: none;
 }
 
 #workspaces button {
-    padding: 0 8px;
-    color: @subtext1;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    margin: 1px 2px;
-    font-weight: 700;
-}
-
-#workspaces button:hover {
-    background: @surface1;
-    color: @text;
+	border-radius: 0;
+	border: none;
+	margin: 0;
+	min-width: 28px;
+	padding: 0 8px;
+	font-weight: 800;
+	color: @re0;
+	background: transparent;
 }
 
 #workspaces button.active {
-    background: @mauve;
-    color: @crust;
+	background-color: @re2;
+	color: @gr0;
+	box-shadow: inset 0 -2px 0 @re0;
+}
+
+#workspaces button:hover {
+	background-color: @re2;
+	color: @gr0;
 }
 
 #workspaces button.urgent {
-    background-color: @red;
-    color: @crust;
+	background-color: @ye0;
+	color: @ye2;
 }
 
-/* Logo */
-#custom-logo {
-    color: @lavender;
-    font-weight: bold;
-}
 
-#custom-brightness {
-    color: @yellow;
-}
+/* === CLOCKS === */
 
-/* Clock — centro */
 #clock {
-    color: @text;
-    font-weight: bold;
-    padding: 2px 14px;
+	color: @re0;
+	background-color: @no1;
+	padding: 0 32px;
+	font-weight: 700;
 }
 
-/* Módulos direita com cores Catppuccin sutis */
-#cpu {
-    color: @peach;
+#clock:hover {
+	color: @gr0;
+	background-color: @re2;
 }
 
-#memory {
-    color: @green;
-}
 
+/* === SYSTEM METRICS === */
+
+#cpu,
+#memory,
+#temperature,
 #disk {
-    color: @yellow;
-}
-
-#network {
-    color: @sky;
-}
-
-#pulseaudio {
-    color: @pink;
-}
-
-#pulseaudio.muted {
-    color: @surface2;
-}
-
-#battery {
-    color: @teal;
-}
-
-#battery.warning {
-    color: @yellow;
-}
-
-#battery.critical {
-    color: @red;
-}
-
-#temperature {
-    color: @maroon;
+	color: @re0;
+	background-color: @no1;
 }
 
 #temperature.critical {
-    color: @red;
+	color: @no0;
+	background-color: @ye0;
 }
 
-#custom-power {
-    color: @red;
-    padding-right: 12px;
+#cpu:hover,
+#memory:hover,
+#temperature:hover,
+#disk:hover {
+	color: @re0;
+	background-color: @re2;
 }
 
-#custom-power:hover {
-    background: @surface1;
+
+/* === NETWORK & AUDIO === */
+
+#network {
+	background-color: @no1;
+	color: @cy0;
+}
+
+#network.disconnected {
+	color: @no0;
+	background-color: @re1;
+}
+
+#pulseaudio {
+	color: @re0;
+	background-color: @no1;
+}
+
+#pulseaudio.muted {
+	color: @re1;
+}
+
+#network:hover,
+#pulseaudio:hover {
+	color: @gr0;
+	background-color: @re2;
+}
+
+#pulseaudio.muted:hover {
+	color: @re1;
+	background-color: @re2;
+}
+
+
+/* === BATTERY & BACKLIGHT === */
+
+#battery {
+	color: @gr0;
+	background-color: @no1;
+}
+
+#battery.warning {
+	color: @ye0;
+}
+
+#battery.critical {
+	color: @no0;
+	background-color: @re0;
 }
 
 #backlight {
-    color: @yellow;
+	color: @ye0;
+	background-color: @no1;
 }
 
-/* Taskbar — mostra só minimized */
-#taskbar button:not(.minimized) {
-    opacity: 0;
-    min-width: 0px;
-    min-height: 0px;
-    padding: 0px;
-    margin: 0px;
-    border: none;
-    background: transparent;
-    box-shadow: none;
+#backlight:hover {
+	background-color: @re2;
 }
 
-#taskbar button.minimized {
-    background: @surface0;
-    border: 1px solid @surface1;
-    border-radius: 12px;
-    padding: 4px 12px;
-    margin: 3px 4px;
-    color: @text;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+/* === CUSTOM BRIGHTNESS === */
+
+#custom-brightness {
+	color: @ye0;
+	background-color: @no1;
 }
 
-#taskbar button.minimized:hover {
-    background: @surface1;
+#custom-brightness:hover {
+	color: @gr0;
+	background-color: @re2;
 }
 
-/* Tooltip */
+
+/* === POWER === */
+
+#custom-power {
+	color: @no0;
+	background-color: @re0;
+	font-weight: 800;
+	padding: 0 16px;
+}
+
+#custom-power:hover {
+	background-color: @gr0;
+	color: @no0;
+}
+
+
+/* === TRAY === */
+
+#tray {
+	color: @re0;
+	background-color: @no1;
+	padding: 0 12px;
+}
+
+#tray menu {
+	background-color: @no1;
+	border: 1px solid alpha(@re0, 0.45);
+	border-radius: 8px;
+}
+
+#tray menuitem {
+	color: @wh0;
+	padding: 6px 10px;
+}
+
+#tray menuitem:hover {
+	background-color: @re2;
+	color: @gr0;
+}
+
+
+/* === TOOLTIP === */
+
 tooltip {
-    background: @crust;
-    border: 1px solid @surface1;
-    border-radius: 10px;
-    padding: 8px;
+	background: @no1;
+	border: 1px solid alpha(@re0, 0.45);
+	border-radius: 8px;
+	padding: 8px;
+	box-shadow: 0 10px 24px alpha(@no0, 0.45);
 }
 
 tooltip label {
-    color: @text;
+	color: @wh0;
 }
