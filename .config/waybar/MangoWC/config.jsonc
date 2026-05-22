@@ -48,7 +48,7 @@
     "format": "  ",
     "tooltip": false,
     "tooltip-format": "Mango launcher",
-    "on-click": "wofi --show drun --conf ~/.config/wofi/spotlight.conf --no-actions",
+    "on-click": "~/.config/wofi/launch.sh --show drun --conf ~/.config/wofi/spotlight.conf --no-actions",
     "on-click-right": "kitty"
   },
 

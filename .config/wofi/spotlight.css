@@ -1,25 +1,27 @@
-/* Wofi Spotlight — compact app launcher */
+/* Wofi Spotlight — compact app launcher aligned with MangoWC */
 @import url("file:///home/geko/.config/wofi/matugen.css");
 
-@define-color bg rgba(3, 4, 8, 0.65);
-@define-color bg_input #05070d;
-@define-color bg_hover #0a0e1a;
+@define-color bg alpha(@matugen_surface, 0.85);
+@define-color bg_input rgba(0, 0, 0, 0.25);
+@define-color bg_hover alpha(@matugen_primary_container, 0.35);
 @define-color fg @matugen_primary;
-@define-color fg_dim #898d99;
+@define-color fg_dim @matugen_on_surface;
 @define-color accent @matugen_on_primary_container;
-@define-color border_color @matugen_primary_container;
+@define-color border_color alpha(@matugen_primary, 0.45);
 @define-color selected_bg @matugen_primary_container;
 
 * {
-  font-family: "GeistMono Nerd Font", monospace;
-  font-size: 16px;
+  font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
 }
 
 window {
   background-color: @bg;
   color: @fg;
   border: 2px solid @border_color;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 #outer-box {
@@ -33,10 +35,16 @@ window {
   min-height: 24px;
   background-color: @bg_input;
   color: @fg;
-  border: 1px solid @border_color;
-  border-radius: 10px;
+  border: 1px solid @matugen_primary_container;
+  border-radius: 8px;
   outline: none;
   box-shadow: none;
+}
+
+#prompt {
+  color: @matugen_primary;
+  font-weight: bold;
+  margin: 0 10px 0 0;
 }
 
 #scroll, #inner-box {
@@ -80,5 +88,14 @@ window {
   min-height: 28px;
 }
 
-scrollbar { background-color: transparent; border: none; }
-scrollbar slider { background-color: @border_color; border-radius: 0; min-width: 4px; min-height: 24px; }
+scrollbar {
+  background-color: transparent;
+  border: none;
+}
+
+scrollbar slider {
+  background-color: @border_color;
+  border-radius: 4px;
+  min-width: 4px;
+  min-height: 24px;
+}
