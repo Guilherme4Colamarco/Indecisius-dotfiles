@@ -19,12 +19,7 @@ mapfile -t images < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( \
 # Pick random
 selected="${images[RANDOM % ${#images[@]}]}"
 
-# Set with waypaper-engine if running, otherwise use awww
-if pgrep -x waypaper-daemon >/dev/null || pgrep -x waypaper-engine >/dev/null; then
-    waypaper-engine random
-else
-    # Set with awww (daemon handles transition)
-    # Random transition type each time
-    AWWW_TRANSITION=random awww img "$selected"
-    "$HOME/.config/mango/scripts/wm/update-matugen-accent.sh" "$selected" >/dev/null 2>&1 || true
-fi
+# Set with awww (daemon handles transition)
+# Random transition type each time
+AWWW_TRANSITION=random awww img "$selected"
+"$HOME/.config/mango/scripts/wm/update-matugen-accent.sh" "$selected" >/dev/null 2>&1 || true
