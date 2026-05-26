@@ -36,6 +36,8 @@ choice=$({
   emit VG vertical_grid '#80cbc4'
   emit VK vertical_deck '#f07178'
   emit DW dwindle '#b2ccd6'
+  emit F  fair '#ffb86c'
+  emit VF vertical_fair '#ff79c6'
 } | wofi --dmenu --conf "$HOME/.config/wofi/layout.conf" --allow-images --parse-search --cache-file /dev/null --prompt 'Mango layout') || exit 0
 
 code=${choice%% *}
