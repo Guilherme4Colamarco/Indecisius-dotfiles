@@ -285,8 +285,8 @@ rules = [
   { mime = "application/x-bzip2",         fg = "$error" },
   { mime = "application/x-7z-compressed", fg = "$error" },
   { mime = "application/x-rar",           fg = "$error" },
-  { name = "*",  fg = "$on_surface" },
-  { name = "*/", fg = "$primary" },
+  { url = "*",  fg = "$on_surface" },
+  { url = "*/", fg = "$primary" },
 ]
 EOF
 
