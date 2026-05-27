@@ -17,6 +17,7 @@
     "custom/logo",
     "custom/arrow-left-re0",
     "ext/workspaces",
+    "custom/minimize",
     "custom/arrow-left-no1"
   ],
 
@@ -43,6 +44,14 @@
   "custom/arrow-left-re0": { "format": "  ", "tooltip": false },
   "custom/arrow-right-gr0": { "format": "  ", "tooltip": false },
   "custom/arrow-left-gr0": { "format": "  ", "tooltip": false },
+
+  "custom/minimize": {
+    "format": "  ",
+    "tooltip": true,
+    "tooltip-format": "Left click: Minimize | Right click: View Minimized",
+    "on-click": "mmsg -s -d minimized",
+    "on-click-right": "~/.config/mango/scripts/menus/minimized-menu.sh"
+  },
 
   "custom/logo": {
     "format": "  ",
