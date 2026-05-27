@@ -91,6 +91,7 @@ window#waybar.hidden {
 #backlight,
 #custom-brightness,
 #custom-minimize,
+#custom-layout,
 #custom-power {
 	background-color: @no1;
 	border: none;
@@ -113,6 +114,7 @@ window#waybar.hidden {
 #temperature,
 #battery,
 #custom-minimize,
+#custom-layout,
 #backlight {
 	padding: 0 16px;
 	min-width: 15px;
@@ -346,7 +348,8 @@ window#waybar.hidden {
 }
 
 #custom-mako:hover,
-#custom-minimize:hover {
+#custom-minimize:hover,
+#custom-layout:hover {
 	color: @gr0;
 	background-color: @re2;
 }

@@ -18,6 +18,7 @@
     "custom/arrow-left-re0",
     "ext/workspaces",
     "custom/minimize",
+    "custom/layout",
     "custom/arrow-left-no1"
   ],
 
@@ -51,6 +52,14 @@
     "tooltip-format": "Left click: Minimize | Right click: View Minimized",
     "on-click": "mmsg -s -d minimized",
     "on-click-right": "~/.config/mango/scripts/menus/minimized-menu.sh"
+  },
+
+  "custom/layout": {
+    "format": "  ",
+    "tooltip": true,
+    "tooltip-format": "Left click: Layout Menu | Right click: Next Layout",
+    "on-click": "~/.config/mango/scripts/menus/layout-menu.sh",
+    "on-click-right": "mmsg -s -d switch_layout"
   },
 
   "custom/logo": {
