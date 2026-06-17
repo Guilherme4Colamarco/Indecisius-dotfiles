@@ -550,6 +550,12 @@ main() {
     detect_system
     select_notification_daemon
 
+    # Generate notification daemon config based on selection
+    if [ "$DRY_RUN" -eq 0 ]; then
+        print_info "Generating notification daemon config..."
+        run "$REPO_ROOT/.config/mango/scripts/wm/generate-notif-config.sh" "$(choice_to_name ${NOTIFICATION_DAEMON_CHOICE:-1})"
+    fi
+
     if ! ask_confirmation "Continue with installation?"; then
         echo -e "${YELLOW}Cancelled.${NC}"
         exit 0
