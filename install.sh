@@ -495,6 +495,7 @@ main() {
         xdg-desktop-portal xdg-desktop-portal-wlr xdg-user-dirs
         nwg-look qt5ct qt6ct gtk3 gtk4
         dbus
+        wlrctl imagemagick
         ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji
     )
     install_packages "${CORE_PKGS[@]}"

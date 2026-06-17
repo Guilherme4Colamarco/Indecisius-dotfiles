@@ -1,18 +1,20 @@
 #!/bin/bash
 # Generate live accent colors from the current wallpaper with matugen.
-# Replaces cybr red at runtime while keeping safe fallbacks.
+# Replaces accent at runtime while keeping safe fallbacks matching Indecisius theme.
 
 set -euo pipefail
 
-fallback_primary="#F24848"
-fallback_primary_container="#331215"
-fallback_on_primary_container="#30F291"
+# Indecisius theme fallbacks (earth/amber tones)
+fallback_primary="#c9b890"
+fallback_primary_container="#201b14"
+fallback_on_primary_container="#c9b890"
 fallback_surface="#05070D"
-fallback_on_surface="#F24848"
+fallback_on_surface="#c9b890"
 fallback_secondary="#80d4aa"
 fallback_secondary_container="#264d3c"
 fallback_tertiary="#90caf9"
 fallback_tertiary_container="#274b61"
+fallback_error="#ad401f"
 
 image="${1:-}"
 
@@ -54,7 +56,7 @@ tertiary=${tertiary:-$fallback_tertiary}
 tertiary_container=${tertiary_container:-$fallback_tertiary_container}
 surface=${surface:-$fallback_surface}
 on_surface=${on_surface:-$fallback_on_surface}
-error=${error:-#ffb4ab}
+error=${error:-$fallback_error}
 
 mkdir -p "$HOME/.config/waybar/MangoWC/svg" "$HOME/.config/wofi" "$HOME/.config/fish/conf.d" "$HOME/.config/cava" "$HOME/.config/mango/configs"
 
@@ -289,7 +291,6 @@ rules = [
   { url = "*/", fg = "$primary" },
 ]
 EOF
-
 
 # Reload or restart Waybar dynamically to pick up CSS @import changes
 waybar_pid=$(pgrep -x waybar | head -n 1 || true)

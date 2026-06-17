@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Toggle Mango scroller center mode on/off.
 # Source of truth: ~/.config/mango/configs/layout.conf
 
@@ -30,5 +30,7 @@ fi
 set_value scroller_focus_center "$new"
 set_value scroller_prefer_center "$new"
 
-mmsg -d reload_config
+# Apply immediately without full reload
+mmsg -d "set scroller_focus_center=$new"
+mmsg -d "set scroller_prefer_center=$new"
 notify-send "$msg"
