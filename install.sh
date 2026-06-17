@@ -220,6 +220,84 @@ install_session_entry() {
 }
 
 # ============================================
+# Notification Daemon Selection
+# ============================================
+select_notification_daemon() {
+    print_section "Notification Daemon Selection"
+    
+    # Check what's already installed
+    local installed_mako=false
+    local installed_swaync=false
+    local installed_dunst=false
+    
+    package_installed mako && installed_mako=true
+    package_installed swaync && installed_swaync=true
+    package_installed dunst && installed_dunst=true
+    
+    echo -e "${WHITE}Available notification daemons:${NC}"
+    
+    if [ "$installed_mako" = true ]; then
+        echo -e "  ${CYAN}1)${NC} mako ${GREEN}[installed]${NC}"
+    else
+        echo -e "  ${CYAN}1)${NC} mako ${YELLOW}[not installed]${NC}"
+    fi
+    echo -e "       ${INFO} Lightweight, Wayland-native, config included in dotfiles"
+    
+    if [ "$installed_swaync" = true ]; then
+        echo -e "  ${CYAN}2)${NC} swaync ${GREEN}[installed]${NC}"
+    else
+        echo -e "  ${CYAN}2)${NC} swaync ${YELLOW}[not installed]${NC}"
+    fi
+    echo -e "       ${INFO} GTK-based, notification center + widgets, needs AUR (no dotfiles config yet)"
+    
+    if [ "$installed_dunst" = true ]; then
+        echo -e "  ${CYAN}3)${NC} dunst ${GREEN}[installed]${NC}"
+    else
+        echo -e "  ${CYAN}3)${NC} dunst ${YELLOW}[not installed]${NC}"
+    fi
+    echo -e "       ${INFO} Classic, highly configurable, X11/Wayland (no dotfiles config yet)"
+    
+    echo -e "  ${CYAN}4)${NC} None / Manual ${WARNING}I'll handle notifications myself${NC}"
+    echo ""
+    
+    local default_choice=1
+    if [ "$installed_mako" = true ]; then default_choice=1
+    elif [ "$installed_swaync" = true ]; then default_choice=2
+    elif [ "$installed_dunst" = true ]; then default_choice=3
+    fi
+    
+    if [ "$ASSUME_YES" -eq 1 ]; then
+        NOTIFICATION_DAEMON_CHOICE=$default_choice
+        print_info "Auto-selecting: $(choice_to_name $default_choice) (--yes)"
+        return 0
+    fi
+    
+    if [ ! -t 0 ]; then
+        NOTIFICATION_DAEMON_CHOICE=$default_choice
+        print_info "Non-interactive: defaulting to $(choice_to_name $default_choice)"
+        return 0
+    fi
+    
+    echo -n "Choose notification daemon [1-4] (default: $default_choice): "
+    read -r choice
+    choice="${choice:-$default_choice}"
+    
+    case "$choice" in
+        1|2|3|4) NOTIFICATION_DAEMON_CHOICE=$choice ;;
+        *) print_warning "Invalid choice, using default ($default_choice)"; NOTIFICATION_DAEMON_CHOICE=$default_choice ;;
+    esac
+}
+
+choice_to_name() {
+    case "$1" in
+        1) echo "mako" ;;
+        2) echo "swaync" ;;
+        3) echo "dunst" ;;
+        4) echo "none" ;;
+    esac
+}
+
+# ============================================
 # Detection
 # ============================================
 detect_system() {
@@ -470,6 +548,7 @@ main() {
 
     validate_repo_layout
     detect_system
+    select_notification_daemon
 
     if ! ask_confirmation "Continue with installation?"; then
         echo -e "${YELLOW}Cancelled.${NC}"
@@ -484,7 +563,7 @@ main() {
     print_section "Installing Core Packages"
     CORE_PKGS=(
         mangowm wlr-randr
-        waybar wofi cava mako matugen jq
+        waybar wofi cava matugen jq
         kitty fish starship zoxide fastfetch
         bat eza yazi neovim
         cliphist wl-clipboard
@@ -499,6 +578,39 @@ main() {
         ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji
     )
     install_packages "${CORE_PKGS[@]}"
+
+    # Install chosen notification daemon
+    case "${NOTIFICATION_DAEMON_CHOICE:-1}" in
+        1)
+            print_info "Installing mako (default, config included)..."
+            if ! package_installed mako; then
+                CORE_PKGS=(mako)
+                install_packages "${CORE_PKGS[@]}"
+            else
+                print_success "mako already installed"
+            fi
+            ;;
+        2)
+            print_info "Installing swaync (AUR)..."
+            if ! package_installed swaync; then
+                AUR_PKGS+=(swaync)
+            else
+                print_success "swaync already installed"
+            fi
+            ;;
+        3)
+            print_info "Installing dunst..."
+            if ! package_installed dunst; then
+                CORE_PKGS=(dunst)
+                install_packages "${CORE_PKGS[@]}"
+            else
+                print_success "dunst already installed"
+            fi
+            ;;
+        4)
+            print_warning "Skipping notification daemon (manual setup)"
+            ;;
+    esac
 
     print_section "Installing Optional AUR Packages"
     AUR_PKGS=()
